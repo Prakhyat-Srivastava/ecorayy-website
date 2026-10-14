@@ -41,7 +41,7 @@ const roles = [
           <ul class="contact-list" role="list">
             <li class="contact-item" data-sample="Phone (B3)"><span class="icon-circle"><Icon name="phone" /></span><span><strong>{contact.phoneDisplay}</strong><span>{H('Phone · number coming soon', 'फ़ोन · नंबर जल्द')}</span></span></li>
             <li class="contact-item" data-sample="WhatsApp (B4)"><span class="icon-circle"><Icon name="chat" /></span><span><strong>WhatsApp</strong><span>{H('Business number coming soon', 'बिज़नेस नंबर जल्द')}</span></span></li>
-            <li class="contact-item" data-sample="Email on own domain (B2)"><span class="icon-circle"><Icon name="mail" /></span><span><strong>{contact.email}</strong><span>{H('Email · address coming soon', 'ईमेल · पता जल्द')}</span></span></li>
+            <li class="contact-item"><span class="icon-circle"><Icon name="mail" /></span><span><a href={contact.emailHref}><strong>{contact.email}</strong></a><span>{H('Email us any time', 'कभी भी ईमेल करें')}</span></span></li>
             <li class="contact-item" data-sample="Hours (B5)"><span class="icon-circle"><Icon name="clock" /></span><span><strong>{tr(contact.hours, lang)}</strong><span>{tr(contact.responsePromise, lang)}</span></span></li>
           </ul>
         </div>

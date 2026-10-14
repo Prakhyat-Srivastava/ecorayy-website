@@ -41,7 +41,7 @@ const strings = {
   sending: H('Preparing your request…', 'आपका अनुरोध तैयार हो रहा है…'),
 };
 ---
-<form class="enquiry" id={id} data-enquiry data-intent={intent} data-lang={lang} data-hours={JSON.stringify(contact.hoursSpec)} data-strings={JSON.stringify(strings)} novalidate>
+<form class="enquiry" id={id} data-enquiry data-intent={intent} data-lang={lang} data-hours={JSON.stringify(contact.hoursSpec)} data-email={contact.email} data-strings={JSON.stringify(strings)} novalidate>
   {showIntents && (
     <fieldset class="enquiry__intents" data-intents>
       <legend class="field__label">{H('What can we help with?', 'हम किसमें मदद कर सकते हैं?')}</legend>

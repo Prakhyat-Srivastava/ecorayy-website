@@ -1535,3 +1535,31 @@ html[lang="hi"] .cert__kicker { letter-spacing: .03em; font-size: .875rem; }
 .cert-dlg__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 20px; border-bottom: 1px solid var(--line); }
 .cert-dlg__body { overflow: auto; background: #eef1f5; padding: clamp(8px, 2vw, 24px); }
 .cert-dlg__body picture, .cert-dlg__body img { display: block; width: 100%; height: auto; border-radius: 4px; box-shadow: 0 10px 30px -10px rgba(6,22,51,.3); }
+
+/* ------------------------------------------------------------- Vision + motto */
+.vision { position: relative; overflow: hidden; }
+.vision::before { content: ""; position: absolute; inset: auto -20% -60% auto; width: 70vmax; height: 70vmax; border-radius: 50%; background: radial-gradient(closest-side, rgba(1, 100, 237, .22), transparent 70%); pointer-events: none; }
+.vision .container { position: relative; }
+.vision__grid { display: grid; gap: clamp(32px, 5vw, 72px); align-items: center; }
+@media (min-width: 960px) { .vision__grid { grid-template-columns: 1.15fr 1fr; } }
+.vision__head { display: grid; gap: 18px; justify-items: start; }
+.vision__head .lead { max-width: 60ch; }
+.vision__p { color: #b9c6df; max-width: 62ch; line-height: 1.7; }
+.motto { margin: 0; padding: clamp(24px, 3.5vw, 40px); border-radius: 28px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .1); display: grid; gap: 22px; }
+.motto__k { font-size: .75rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: #6fd38a; }
+.motto__lines { display: grid; gap: 0; }
+.motto__lines li { display: flex; align-items: center; gap: 18px; padding: 16px 0; font-size: clamp(1.3rem, 1.05rem + 1.1vw, 1.9rem); font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; color: #fff; }
+.motto__lines li + li { border-top: 1px solid rgba(255, 255, 255, .1); }
+.motto__icon { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(1, 100, 237, .18); color: #8fbaff; }
+.motto__lines li:nth-child(2) .motto__icon { background: rgba(36, 155, 65, .2); color: #6fd38a; }
+.motto__lines li:nth-child(3) .motto__icon { background: rgba(255, 196, 61, .16); color: #ffd36b; }
+.motto__icon svg { width: 22px; height: 22px; }
+.vision__pillars { display: grid; gap: 16px; margin-top: clamp(40px, 6vw, 72px); }
+@media (min-width: 760px) { .vision__pillars { grid-template-columns: repeat(3, 1fr); } }
+.vision__pillars li { padding: 26px; border-radius: var(--r-card); background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .1); display: grid; gap: 10px; align-content: start; }
+.vision__pillars .icon-circle { background: rgba(1, 100, 237, .18); color: #8fbaff; }
+.vision__pillars h3 { color: #fff; }
+.vision__pillars p { color: #b9c6df; }
+.vision__belief { margin: clamp(40px, 6vw, 72px) auto 0; max-width: 34ch; text-align: center; font-size: clamp(1.35rem, 1.1rem + 1.2vw, 2.1rem); font-weight: 650; line-height: 1.35; letter-spacing: -0.015em; color: #fff; }
+.vision__close { margin: 20px auto 0; max-width: 64ch; text-align: center; color: #b9c6df; line-height: 1.7; }
+html[lang="hi"] .motto__k { letter-spacing: .02em; font-size: .875rem; }

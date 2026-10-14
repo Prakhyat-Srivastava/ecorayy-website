@@ -1,0 +1,47 @@
+---
+import { u } from '../lib/url';
+import Icon from './Icon.astro';
+import { tr } from '../data/i18n';
+import { motto, vision, type Lang } from '../data/site';
+
+interface Props { lang?: Lang; full?: boolean }
+const { lang = 'en', full = false } = Astro.props;
+const hi = lang === 'hi';
+---
+<section class="section section--night vision" id="vision" aria-labelledby="vision-t">
+  <div class="container">
+    <div class="vision__grid">
+      <div class="vision__head">
+        <span class="label">{hi ? 'हमारी दृष्टि' : 'Our vision'}</span>
+        <h2 id="vision-t" class="h2">{tr(vision.title, lang)}</h2>
+        <p class="lead">{tr(vision.intro, lang)}</p>
+        {full && <p class="vision__p">{tr(vision.heroes, lang)}</p>}
+        {!full && <a class="link-arrow" href={u('/about/#vision')}>{hi ? 'हमारी पूरी दृष्टि पढ़ें' : 'Read our full vision'}<Icon name="arrow-right" /></a>}
+      </div>
+      <figure class="motto reveal" data-delay="1">
+        <figcaption class="motto__k">{hi ? 'हमारा ध्येय वाक्य' : 'Our motto'}</figcaption>
+        <ol class="motto__lines" role="list">
+          {motto.map((m) => (
+            <li><span class="motto__icon"><Icon name={m.icon} /></span><span>{tr(m, lang)}</span></li>
+          ))}
+        </ol>
+      </figure>
+    </div>
+
+    {full && (
+      <>
+        <ul class="vision__pillars" role="list">
+          {vision.pillars.map((p, i) => (
+            <li class="reveal" data-delay={i}>
+              <span class="icon-circle"><Icon name={p.icon} /></span>
+              <h3 class="h4">{tr(p.title, lang)}</h3>
+              <p>{tr(p.text, lang)}</p>
+            </li>
+          ))}
+        </ul>
+        <blockquote class="vision__belief reveal"><p>{tr(vision.belief, lang)}</p></blockquote>
+        <p class="vision__close">{tr(vision.close, lang)}</p>
+      </>
+    )}
+  </div>
+</section>

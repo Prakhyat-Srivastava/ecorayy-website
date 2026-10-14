@@ -137,7 +137,8 @@ const isHome = path === '/' || path === '/hi/';
   <div class="grid" style="--gap:10px">
     <button class="btn btn--block" type="button" disabled data-sample="Phone (B3)"><Icon name="phone" />{t.call} · {t.notConnected}</button>
     <button class="btn btn--secondary btn--block" type="button" disabled data-sample="WhatsApp (B4)"><Icon name="chat" />{t.whatsapp} · {t.notConnected}</button>
-    <a class="btn btn--quiet btn--block" href={href('/contact/', lang)}><Icon name="mail" />{t.sendEnquiry}</a>
+    <a class="btn btn--quiet btn--block" href={contact.emailHref}><Icon name="mail" />{contact.email}</a>
+    <a class="btn btn--quiet btn--block" href={href('/contact/', lang)}><Icon name="arrow-right" />{t.sendEnquiry}</a>
   </div>
   <button class="btn btn--quiet btn--block btn--sm" type="button" data-close style="margin-top:14px;border:0">{t.close}</button>
 </dialog>

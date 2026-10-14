@@ -117,8 +117,8 @@ export const contact = {
   phoneDisplay: '+91 00000 00000',
   phoneHref: null as string | null, // e.g. 'tel:+919XXXXXXXXX'
   whatsappHref: null as string | null, // e.g. 'https://wa.me/919XXXXXXXXX'
-  email: 'enquiry@ecorayy.example',
-  emailHref: null as string | null,
+  email: 'ecorayypowertech@gmail.com', // REAL (provided by the company)
+  emailHref: 'mailto:ecorayypowertech@gmail.com' as string | null,
   hours: { en: 'Mon–Sat, 10:00 am – 6:00 pm', hi: 'सोम–शनि, सुबह 10:00 – शाम 6:00' },
   hoursShort: { en: 'Mon–Sat 10–6', hi: 'सोम–शनि 10–6' },
   hoursSpec: { days: [1, 2, 3, 4, 5, 6], open: 10, close: 18 },
@@ -126,6 +126,40 @@ export const contact = {
     en: 'We reply to every enquiry within one working day.',
     hi: 'हम हर पूछताछ का जवाब एक कार्यदिवस में देते हैं।',
   },
+} as const;
+
+// ------------------------------------------------------- Vision and motto (REAL)
+// Provided by the company. Soldier welfare is stated as an aspiration only:
+// do not describe specific initiatives until they actually exist.
+export const motto = [
+  { en: 'Powering the Nation.', hi: 'राष्ट्र को ऊर्जा।', icon: 'bolt' },
+  { en: 'Honouring Our Heroes.', hi: 'वीरों को सम्मान।', icon: 'shield-check' },
+  { en: 'Illuminating the Future.', hi: 'भविष्य को प्रकाश।', icon: 'sun' },
+] as const;
+
+export const vision = {
+  title: { en: 'Powering progress, honouring our heroes', hi: 'प्रगति को ऊर्जा, वीरों को सम्मान' },
+  intro: {
+    en: 'We envision a future where technology, sustainability and social responsibility work together for the progress of our nation. As a company engaged in electrical equipment and solar energy solutions, we aspire to illuminate homes, industries and communities through reliable, energy-efficient and environmentally responsible products.',
+    hi: 'हम ऐसे भविष्य की कल्पना करते हैं जहाँ तकनीक, स्थिरता और सामाजिक ज़िम्मेदारी मिलकर देश की प्रगति के लिए काम करें। विद्युत उपकरण और सौर ऊर्जा समाधानों से जुड़ी कंपनी के रूप में, हम भरोसेमंद, ऊर्जा-कुशल और पर्यावरण के प्रति ज़िम्मेदार उत्पादों से घरों, उद्योगों और समुदायों को रोशन करना चाहते हैं।',
+  },
+  heroes: {
+    en: 'With deep respect for the brave soldiers who safeguard our country’s sovereignty and protect its citizens, we aim to make soldier welfare an integral part of our corporate vision. We aspire to contribute to the well-being of serving and retired defence personnel and their families, through meaningful initiatives, support for their communities, and opportunities that recognise their service and sacrifice.',
+    hi: 'देश की संप्रभुता की रक्षा करने वाले और नागरिकों की सुरक्षा करने वाले वीर सैनिकों के प्रति गहरे सम्मान के साथ, हम सैनिक कल्याण को अपनी कॉर्पोरेट दृष्टि का अभिन्न अंग बनाना चाहते हैं। हम सेवारत और सेवानिवृत्त रक्षा कर्मियों और उनके परिवारों की भलाई में योगदान देना चाहते हैं, सार्थक पहलों, उनके समुदायों के सहयोग, और उनकी सेवा और बलिदान को सम्मान देने वाले अवसरों के माध्यम से।',
+  },
+  belief: {
+    en: 'We believe that true progress is not measured only by the power we generate, but also by the lives we uplift.',
+    hi: 'हमारा मानना है कि सच्ची प्रगति केवल उत्पन्न की गई ऊर्जा से नहीं, बल्कि उन जीवनों से भी मापी जाती है जिन्हें हम बेहतर बनाते हैं।',
+  },
+  close: {
+    en: 'Through innovation, integrity, clean energy and a commitment to national service, Ecorayy Power Tech strives to become a trusted Indian brand that not only powers the nation but also stands with those who protect it.',
+    hi: 'नवाचार, ईमानदारी, स्वच्छ ऊर्जा और राष्ट्र सेवा के संकल्प के साथ, Ecorayy Power Tech एक भरोसेमंद भारतीय ब्रांड बनने का प्रयास करती है, जो न केवल देश को ऊर्जा दे, बल्कि उसकी रक्षा करने वालों के साथ भी खड़ा रहे।',
+  },
+  pillars: [
+    { icon: 'solar-panel', title: { en: 'Clean energy', hi: 'स्वच्छ ऊर्जा' }, text: { en: 'Reliable, energy-efficient solar and electrical products for homes, industries and communities.', hi: 'घरों, उद्योगों और समुदायों के लिए भरोसेमंद, ऊर्जा-कुशल सोलर और विद्युत उत्पाद।' } },
+    { icon: 'shield-check', title: { en: 'Soldier welfare', hi: 'सैनिक कल्याण' }, text: { en: 'Standing with serving and retired defence personnel and their families.', hi: 'सेवारत और सेवानिवृत्त रक्षा कर्मियों और उनके परिवारों के साथ।' } },
+    { icon: 'landmark', title: { en: 'National service', hi: 'राष्ट्र सेवा' }, text: { en: 'Innovation and integrity, in service of the nation’s progress.', hi: 'नवाचार और ईमानदारी, देश की प्रगति की सेवा में।' } },
+  ],
 } as const;
 
 export const PREVIEW_NOTE = {

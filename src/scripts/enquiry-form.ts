@@ -223,7 +223,7 @@ function init(form: HTMLFormElement) {
         <div class="confirm confirm--preview">
           <span class="tag tag--warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3.5 2.5 20h19L12 3.5Z"/><path d="M12 10v4.5"/><path d="M12 17.5v.1"/></svg>${hi ? 'प्रीव्यू, नहीं भेजा गया' : 'Preview, not sent'}</span>
           <h2 class="h2">${hi ? `${first}, आपका अनुरोध तैयार है, लेकिन अभी भेजा नहीं गया है।` : `Your request is ready, ${first}, but it has not been sent.`}</h2>
-          <p class="lead">${hi ? 'यह वेबसाइट अभी प्रीव्यू में है। हमारी पूछताछ प्रणाली लॉन्च से पहले जोड़ी जाएगी। आपने जो भी भरा है, वह इस डिवाइस से बाहर नहीं गया है।' : 'This website is a preview. Enquiries will be delivered once our enquiry system is connected before launch. Nothing you entered has left this device.'}</p>
+          <p class="lead">${hi ? 'यह वेबसाइट अभी प्रीव्यू में है। हमारी पूछताछ प्रणाली लॉन्च से पहले जोड़ी जाएगी। आपने जो भी भरा है, वह इस डिवाइस से बाहर नहीं गया है। आप इसे स्वयं हमें ईमेल कर सकते हैं।' : 'This website is a preview. Enquiries will be delivered once our enquiry system is connected before launch. Nothing you entered has left this device. You can email it to us yourself instead.'}</p>
           ${summary(p)}
           <div class="confirm__future">
             <p class="caption">${hi ? 'लॉन्च के बाद आपको यह दिखेगा:' : 'After launch, you’ll see this instead:'}</p>
@@ -231,6 +231,7 @@ function init(form: HTMLFormElement) {
             <p class="muted">${hi ? 'संदर्भ संख्या (जैसे EQ-2026-0001), और' : 'A reference number (like EQ-2026-0001), and'} ${hi ? `हमारी टीम आपको ${by} कॉल या WhatsApp करेगी।` : `“Our team will call or WhatsApp you ${by}.”`}</p>
           </div>
           <div class="cluster">
+            ${form.dataset.email ? `<a class="btn" href="mailto:${esc(form.dataset.email)}?subject=${encodeURIComponent(hi ? 'वेबसाइट से पूछताछ' : 'Website enquiry')}&body=${encodeURIComponent(plainText(p))}">${hi ? 'यह अनुरोध ईमेल करें' : 'Email this request'}</a>` : ''}
             <button class="btn btn--secondary" type="button" data-copy-request>${hi ? 'अनुरोध कॉपी करें' : 'Copy request text'}</button>
             <button class="btn btn--quiet" type="button" data-edit>${hi ? 'विवरण बदलें' : 'Edit details'}</button>
           </div>

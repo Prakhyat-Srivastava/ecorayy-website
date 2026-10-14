@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import Img from '../components/Img.astro';
 import Icon from '../components/Icon.astro';
 import SunToSwitch from '../components/SunToSwitch.astro';
+import Vision from '../components/Vision.astro';
 import HeroStage from '../components/HeroStage.astro';
 import Registrations from '../components/Registrations.astro';
 import DirectorsMini from '../components/DirectorsMini.astro';
@@ -147,6 +148,8 @@ const cats = categories.map((c) => ({ ...c, count: familiesIn(c.slug).length }))
     </div>
   </section>
 
+  <Vision lang={lang} />
+
   <!-- 6. Registrations, not slogans -->
   <section class="section">
     <div class="container">
@@ -155,7 +158,7 @@ const cats = categories.map((c) => ({ ...c, count: familiesIn(c.slug).length }))
           <SectionHead
             label={H('Verifiable, not just trustworthy', 'जाँच सकने योग्य')}
             title={H('Check us. Don’t just trust us.', 'हम पर भरोसा करने से पहले, हमें जाँचिए।')}
-            text={H('Ecorayy was incorporated in 2026. Instead of slogans, here are our registrations, each one checkable on an official government portal.', 'Ecorayy का निगमन 2026 में हुआ। नारों की जगह, ये हैं हमारे पंजीकरण, हर एक को सरकारी पोर्टल पर जाँचा जा सकता है।')}
+            text={H('Ecorayy was incorporated in 2026. Behind our words are our registrations, each one checkable on an official government portal.', 'Ecorayy का निगमन 2026 में हुआ। हमारी बातों के पीछे हैं हमारे पंजीकरण, हर एक को सरकारी पोर्टल पर जाँचा जा सकता है।')}
           />
           <Registrations lang={lang} prefix="home" />
           <div class="reveal" style="margin-top:12px"><Certificate lang={lang} id="home" /></div>

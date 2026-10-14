@@ -31,7 +31,7 @@ const logoImg = await getImage({ src: logo, width: 440, format: 'webp', quality:
         </p>
         <ul class="footer__contact" role="list">
           <li class="contact-item" data-sample="Phone (B3)"><Icon name="phone" /><span>{contact.phoneDisplay}</span></li>
-          <li class="contact-item" data-sample="Email (B2)"><Icon name="mail" /><span>{contact.email}</span></li>
+          <li class="contact-item"><Icon name="mail" /><a href={contact.emailHref}>{contact.email}</a></li>
           <li class="contact-item" data-sample="Hours (B5)"><Icon name="clock" /><span>{tr(contact.hours, lang)}</span></li>
           <li class="contact-item"><Icon name="map-pin" /><span>{hi ? 'पंजीकृत कार्यालय: ' : 'Registered office: '}{company.registeredOffice.oneLine}</span></li>
         </ul>
