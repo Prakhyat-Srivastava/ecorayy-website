@@ -25,7 +25,7 @@
   --danger: #b42318;
 
   /* Type */
-  --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", "Mukta", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-hi: "Mukta", "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
@@ -396,7 +396,8 @@ html[lang="hi"] .label { letter-spacing: .04em; font-size: .875rem; }
 }
 .lang-switch [aria-current="true"] { background: var(--ink); color: #fff; }
 .lang-switch .is-unavailable { color: #9aa5b6; cursor: help; }
-.lang-switch .hi { font-family: var(--font-hi); font-size: .875rem; }
+.lang-switch .hi { font-family: "Kohinoor Devanagari", "Noto Sans Devanagari", "Nirmala UI", "Mangal", system-ui, sans-serif; font-size: .875rem; }
+html[lang="hi"] .lang-switch .hi { font-family: var(--font-hi); }
 
 /* ----------------------------------------------------------------- header */
 .header {

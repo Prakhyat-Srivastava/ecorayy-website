@@ -6,13 +6,13 @@ import Icon from '../../components/Icon.astro';
 import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import logo from '../../assets/brand/ecorayy-logo-lockup.png';
 import { company } from '../../data/site';
-const logoImg = await getImage({ src: logo, width: 360, format: 'png' });
+const logoImg = await getImage({ src: logo, width: 360, format: 'webp', quality: 92 });
 ---
 <Base title="Quote List" description="Your Ecorayy Quote List, share it, save it as PDF, or send it as one enquiry.">
   <section class="section section--tight" style="padding-top:clamp(24px,3vw,40px)">
     <div class="container container--narrow" data-qlist-page>
       <div class="print-head">
-        <img src={logoImg.src} alt="Ecorayy" width="180" style="height:auto" />
+        <img src={logoImg.src} alt="Ecorayy" width="180" style="height:auto" loading="lazy" />
         <div style="text-align:right;font-size:9pt">
           <strong>Quote List</strong><br /><span data-print-date></span><br />{company.legalName}<br />GSTIN {company.gstin}
         </div>

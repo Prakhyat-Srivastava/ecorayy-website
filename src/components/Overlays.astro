@@ -13,7 +13,7 @@ const { lang, path } = Astro.props;
 const t = ui[lang];
 const hi = lang === 'hi';
 const current = sectionOf(path);
-const logoImg = await getImage({ src: logo, height: 80, format: 'png' });
+const logoImg = await getImage({ src: logo, height: 80, format: 'webp', quality: 92 });
 const isHome = path === '/' || path === '/hi/';
 ---
 <!-- Mobile bottom action bar: Solar · Products · Quote List · Contact -->

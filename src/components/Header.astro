@@ -14,7 +14,7 @@ const { lang, path } = Astro.props;
 const t = ui[lang];
 const current = sectionOf(path);
 
-const logoImg = await getImage({ src: logo, height: 100, format: 'png' });
+const logoImg = await getImage({ src: logo, height: 100, format: 'webp', quality: 92 });
 // Mega-menu preview images are loaded only when a panel first opens.
 const previews = new Map<string, string>();
 for (const n of nav) for (const it of n.mega?.items ?? []) {

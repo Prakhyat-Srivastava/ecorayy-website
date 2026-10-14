@@ -11,7 +11,7 @@ import { company, contact, registrations, type Lang } from '../data/site';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const hi = lang === 'hi';
-const logoImg = await getImage({ src: logo, width: 480, format: 'png' });
+const logoImg = await getImage({ src: logo, width: 440, format: 'webp', quality: 90 });
 ---
 <section class="signoff" aria-label={hi ? 'टैगलाइन' : 'Tagline'}>
   <div class="container">

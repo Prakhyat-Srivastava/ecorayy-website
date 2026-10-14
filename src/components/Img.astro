@@ -15,8 +15,10 @@ interface Props {
   vt?: string;          // view-transition-name (card → product hero morph)
   tag?: boolean;        // show "Representative image" on placeholder images
   alt?: string;         // override (use "" for decorative)
+  high?: boolean;       // fetchpriority=high (only the main hero image)
 }
-const { id, sizes, lang = 'en', widths, eager = false, class: cls, position, vt, tag = true, alt } = Astro.props;
+const { id, sizes, lang = 'en', widths, eager = false, class: cls, position, vt, tag = true, alt, high } = Astro.props;
+const priority = high ?? eager;
 const img = images[id];
 const max = img.src.width;
 const ws = (widths ?? [360, 560, 800, 1120, 1600]).filter((w) => w <= max);
@@ -30,10 +32,10 @@ const style = [position && `object-position:${position}`, vt && `view-transition
   sizes={sizes}
   formats={['avif', 'webp']}
   fallbackFormat="jpg"
-  quality={78}
+  quality={58}
   loading={eager ? 'eager' : 'lazy'}
-  fetchpriority={eager ? 'high' : undefined}
-  decoding={eager ? 'sync' : 'async'}
+  fetchpriority={priority ? 'high' : undefined}
+  decoding={priority ? 'sync' : 'async'}
   class={cls}
   style={style || undefined}
   data-tier={img.tier}

@@ -17,7 +17,7 @@ const hi = lang === 'hi';
 <div class="stage">
   <div class="stage__scene">
     <div class="frame frame--night stage__scene-frame">
-      <Img id="hm01" lang={lang} eager sizes="(min-width: 960px) 40vw, 100vw" position="64% 50%" />
+      <Img id="hm01" lang={lang} eager sizes="(min-width: 960px) 40vw, 100vw" widths={[480, 720, 960, 1200]} position="64% 50%" />
     </div>
   </div>
   <aside class="hl" aria-labelledby="hl-title">
@@ -29,7 +29,7 @@ const hi = lang === 'hi';
       {directors.map((d, i) => (
         <a class="hl__person" href={u('/about/team/')}>
           <span class="hl__photo">
-            <Img id={d.image as any} lang={lang} eager sizes="(min-width: 960px) 150px, 42vw" widths={[200, 320, 480, 640]} tag={false} position={i === 0 ? '46% 14%' : '38% 12%'} />
+            <Img id={d.image as any} lang={lang} eager high={false} sizes="(min-width: 960px) 150px, 42vw" widths={[200, 320, 480, 640]} tag={false} position={i === 0 ? '46% 14%' : '38% 12%'} />
           </span>
           <span class="hl__name">{d.name}</span>
           <span class="hl__role">{tr(d.role, lang)}</span>
