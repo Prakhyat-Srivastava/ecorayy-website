@@ -1,0 +1,31 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import Faq from '../../components/ui/Faq.astro';
+const faqs = [
+  { q: 'How do I ask for a price?', a: 'Add products to your Quote List and send it, or use “Get a quote” on any product page. We reply with a written quote.' },
+  { q: 'Do you sell online?', a: 'Not yet. We work through quotes, dealers and projects, so you get prices for your quantities and location.' },
+  { q: 'Can I share my Quote List with someone else?', a: 'Yes. Open your Quote List and choose “Share list”. The link opens the same list on another phone. You can also save it as a PDF.' },
+  { q: 'Is the solar site survey free?', a: 'The survey is how we give you real numbers instead of estimates. Terms will be confirmed when you book.' },
+  { q: 'How do I make a warranty claim?', a: 'See the Warranty page. Until terms are published, call or WhatsApp us with your invoice and a photo of the product.' },
+  { q: 'How can I check that Ecorayy is a registered company?', a: 'Every registration number is on our Registrations page with steps to verify it on official government portals.' },
+];
+---
+<Base title="Support & FAQs" description="Answers to common questions about quotes, Quote Lists, solar surveys, warranty and registrations.">
+  <section class="section section--tight">
+    <div class="container container--narrow">
+      <Breadcrumbs items={[{ label: 'Home', href: u('/') }, { label: 'Support & FAQs' }]} />
+      <div class="stack" style="--stack:16px;margin:16px 0 32px">
+        <h1 class="h1">Support & FAQs</h1>
+        <p class="lead">Quick answers to common questions. Can’t find yours? <a href={u('/contact/?intent=support')}>Ask us</a>.</p>
+      </div>
+      <Faq items={faqs} sample="Sample FAQs" />
+      <div class="cta-band" style="margin-top:48px">
+        <div class="stack" style="--stack:10px"><h2 class="h3">Still need help?</h2><p class="muted">Send a support request and we’ll come back to you.</p></div>
+        <a class="btn" href={u('/contact/?intent=support')}><Icon name="wrench" />Contact support</a>
+      </div>
+    </div>
+  </section>
+</Base>

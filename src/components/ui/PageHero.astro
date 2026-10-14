@@ -1,0 +1,31 @@
+---
+import Img from '../Img.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import type { ImageId } from '../../data/images';
+import type { Lang } from '../../data/site';
+interface Props {
+  label?: string; title: string; lead?: string; image?: ImageId; crumbs?: { label: string; href?: string }[];
+  lang?: Lang; position?: string; wide?: boolean; vt?: string;
+}
+const { label, title, lead, image, crumbs, lang = 'en', position, wide = false, vt } = Astro.props;
+---
+<section class="page-hero">
+  <div class="container">
+    <div class:list={['page-hero__grid', { 'page-hero__grid--media': image }]}>
+      <div class="page-hero__copy">
+        {crumbs && <Breadcrumbs items={crumbs} />}
+        {label && <span class="label">{label}</span>}
+        <h1 class="h1">{title}</h1>
+        {lead && <p class="lead">{lead}</p>}
+        <slot />
+      </div>
+      {image && (
+        <div class="light-pool">
+          <div class:list={['frame', { 'frame--4x3-lg': wide }]}>
+            <Img id={image} lang={lang} eager sizes="(min-width: 960px) 44vw, 100vw" position={position} vt={vt} />
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</section>

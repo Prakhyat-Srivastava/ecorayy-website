@@ -1,0 +1,71 @@
+---
+import { u } from '../../../lib/url';
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import PageHero from '../../../components/ui/PageHero.astro';
+import SectionHead from '../../../components/ui/SectionHead.astro';
+import Steps from '../../../components/ui/Steps.astro';
+import EnquiryForm from '../../../components/EnquiryForm.astro';
+import { categories, categoryUrl } from '../../../data/products';
+const offer = [
+  { icon: 'file', t: 'Dealer pricing', d: 'Channel pricing on the full range, quoted in writing.' },
+  { icon: 'document', t: 'Catalogues & datasheets', d: 'Printed and digital material for your counter and customers.' },
+  { icon: 'users', t: 'A direct line to our team', d: 'A named person for orders, availability and technical questions.' },
+  { icon: 'route', t: 'Project leads where relevant', d: 'Solar and infrastructure enquiries in your area, where it makes sense.' },
+];
+const lookFor = ['An established electrical, hardware or solar business', 'A valid GSTIN', 'Space to stock and display a core range', 'Relationships with electricians and contractors in your area'];
+---
+<Base title="Become a dealer or distributor" description="Apply to become an Ecorayy dealer or distributor for solar equipment, lighting, switches, wires and switchgear." ogImage="ptn01">
+  <PageHero
+    crumbs={[{ label: 'Home', href: u('/') }, { label: 'Partners', href: u('/partners/') }, { label: 'Dealers & distributors' }]}
+    label="Dealers & distributors"
+    title="Sell a range your customers can trust, and verify."
+    lead="Solar equipment, lighting, switches, wires and switchgear from one company, with registrations anyone can check and people who answer the phone."
+    image="ptn01"
+  >
+    <a class="btn" href="#apply" style="justify-self:start">Apply now<Icon name="arrow-right" /></a>
+  </PageHero>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label="What you can sell" title="Five categories, one supplier." />
+      <div class="cluster" style="--gap:10px">
+        {categories.map((c) => <a class="chip" href={categoryUrl(c.slug)}>{c.name}<Icon name="arrow-right" /></a>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split" style="align-items:start">
+      <div>
+        <SectionHead label="What we offer partners" title="What you can expect from us." text="Details are finalised with each partner." />
+        <div class="tile-icons" style="--n:2" data-sample="Dealer programme to confirm (F1)">
+          {offer.map((o, i) => <div class="tile-icon reveal" data-delay={i}><span class="icon-circle"><Icon name={o.icon} /></span><h3>{o.t}</h3><p>{o.d}</p></div>)}
+        </div>
+      </div>
+      <div class="card card--pad reveal" data-sample="Requirements to confirm (F1)">
+        <h3 class="h3">What we look for</h3>
+        <ul class="ticks" role="list" style="margin-top:16px">{lookFor.map((l) => <li><Icon name="check" />{l}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper" id="apply">
+    <div class="container contact-layout">
+      <div>
+        <SectionHead label="Apply" title="Apply to become a dealer" text="Four details to start. Add your business name, GSTIN and current brands in step 2." />
+        <EnquiryForm intent="dealer" id="dealer-form" />
+      </div>
+      <aside class="contact-aside">
+        <div class="card">
+          <h2 class="h4">What happens next</h2>
+          <Steps compact steps={[
+            { icon: 'phone', title: 'We call you', text: 'To understand your business and area.' },
+            { icon: 'map-pin', title: 'We meet', text: 'At your shop, or ours in Etawah.' },
+            { icon: 'handshake', title: 'We agree terms', text: 'In writing, before any order.' },
+          ]} />
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>

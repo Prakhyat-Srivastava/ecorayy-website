@@ -1,0 +1,12 @@
+---
+import Icon from '../Icon.astro';
+interface Props { title: string; text?: string; ratio?: string; note?: string }
+const { title, text, ratio = '4 / 3', note = 'Real photograph needed (G1)' } = Astro.props;
+---
+<div class="placeholder-photo" style={`aspect-ratio:${ratio}`} data-sample={note}>
+  <div>
+    <Icon name="camera" />
+    <strong>{title}</strong>
+    {text && <span>{text}</span>}
+  </div>
+</div>

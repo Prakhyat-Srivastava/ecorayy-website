@@ -1,0 +1,53 @@
+---
+/**
+ * DPIIT Certificate of Recognition, shown as a framed document.
+ * Opens full size in a dialog. This certificate contains no personal data
+ * (unlike the Udyam certificate, which is shared only in the tender pack).
+ */
+import Img from './Img.astro';
+import Icon from './Icon.astro';
+import { company, type Lang } from '../data/site';
+import { tr } from '../data/i18n';
+
+interface Props { lang?: Lang; id: string; variant?: 'feature' | 'row' }
+const { lang = 'en', id, variant = 'row' } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+const dlg = `cert-${id}`;
+---
+<div class:list={['cert', `cert--${variant}`]}>
+  <button class="cert__doc" type="button" data-cert-open={dlg} aria-label={H('View the DPIIT certificate full size', 'DPIIT प्रमाणपत्र बड़ा करके देखें')}>
+    <Img id="cert01" lang={lang} sizes={variant === 'feature' ? '(min-width: 960px) 560px, 100vw' : '(min-width: 760px) 240px, 100vw'} widths={[320, 480, 720, 1000]} tag={false} />
+    <span class="cert__zoom" aria-hidden="true"><Icon name="search" /></span>
+  </button>
+  <div class="cert__info">
+    <span class="cert__kicker"><Icon name="shield-check" />{H('Government of India', 'भारत सरकार')}</span>
+    <h3 class="cert__title">{H('Certificate of Recognition', 'मान्यता प्रमाणपत्र')}</h3>
+    <p class="cert__text">{H('Issued by DPIIT, Ministry of Commerce & Industry, recognising Ecorayy as a startup in Renewable Energy and Manufacture of Electrical Equipment.', 'DPIIT, वाणिज्य एवं उद्योग मंत्रालय द्वारा जारी, Ecorayy को नवीकरणीय ऊर्जा और विद्युत उपकरण निर्माण में स्टार्टअप के रूप में मान्यता।')}</p>
+    <dl class="cert__facts">
+      <div><dt>{H('Certificate no.', 'प्रमाणपत्र सं.')}</dt><dd class="mono">{company.dpiit.number}</dd></div>
+      <div><dt>{H('Issued', 'जारी')}</dt><dd class="mono">24-09-2026</dd></div>
+      <div><dt>{H('Valid up to', 'मान्य')}</dt><dd class="mono">23-06-2036</dd></div>
+    </dl>
+    <div class="cert__actions">
+      <button class="btn btn--secondary btn--sm" type="button" data-cert-open={dlg}><Icon name="search" />{H('View certificate', 'प्रमाणपत्र देखें')}</button>
+      <span class="caption">{H('Scan its QR code to verify with the Government.', 'सरकार से जाँचने के लिए इसका QR कोड स्कैन करें।')}</span>
+    </div>
+  </div>
+</div>
+
+<dialog class="cert-dlg" id={dlg} aria-label={H('DPIIT Certificate of Recognition', 'DPIIT मान्यता प्रमाणपत्र')}>
+  <div class="cert-dlg__bar">
+    <strong>{H('DPIIT Certificate of Recognition', 'DPIIT मान्यता प्रमाणपत्र')}</strong>
+    <button class="icon-btn" type="button" data-close aria-label={H('Close', 'बंद करें')}><Icon name="close" /></button>
+  </div>
+  <div class="cert-dlg__body"><Img id="cert01" lang={lang} sizes="(min-width: 1200px) 1100px, 100vw" widths={[720, 1000, 1158]} tag={false} /></div>
+</dialog>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-cert-open]').forEach((b) => {
+    if (b.dataset.ready) return;
+    b.dataset.ready = '1';
+    b.addEventListener('click', () => (document.getElementById(b.dataset.certOpen!) as HTMLDialogElement | null)?.showModal());
+  });
+</script>

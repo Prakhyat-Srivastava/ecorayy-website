@@ -1,0 +1,71 @@
+---
+import { u } from '../lib/url';
+import { getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import Verify from './Verify.astro';
+import logo from '../assets/brand/ecorayy-logo-lockup.png';
+import { footerCols } from '../data/nav';
+import { href, tr } from '../data/i18n';
+import { company, contact, registrations, type Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const logoImg = await getImage({ src: logo, width: 480, format: 'png' });
+---
+<section class="signoff" aria-label={hi ? 'टैगलाइन' : 'Tagline'}>
+  <div class="container">
+    <p class="signoff__line"><span class="signoff__text" lang="en">Brighter tomorrow together</span></p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a href={href('/', lang)} aria-label="Ecorayy"><img src={logoImg.src} width="480" height={Math.round(480 * logo.height / logo.width)} alt="Ecorayy, Brighter tomorrow together" loading="lazy" /></a>
+        <p class="muted small">
+          {hi
+            ? 'सोलर और विद्युत इन्फ्रास्ट्रक्चर, घरों, व्यवसायों और सार्वजनिक संस्थाओं के लिए। इटावा, उत्तर प्रदेश।'
+            : 'Solar and electrical infrastructure for homes, businesses and public bodies. Etawah, Uttar Pradesh.'}
+        </p>
+        <ul class="footer__contact" role="list">
+          <li class="contact-item" data-sample="Phone (B3)"><Icon name="phone" /><span>{contact.phoneDisplay}</span></li>
+          <li class="contact-item" data-sample="Email (B2)"><Icon name="mail" /><span>{contact.email}</span></li>
+          <li class="contact-item" data-sample="Hours (B5)"><Icon name="clock" /><span>{tr(contact.hours, lang)}</span></li>
+          <li class="contact-item"><Icon name="map-pin" /><span>{hi ? 'पंजीकृत कार्यालय: ' : 'Registered office: '}{company.registeredOffice.oneLine}</span></li>
+        </ul>
+      </div>
+      <div class="footer__cols">
+        {footerCols.map((col) => (
+          <div class="footer__col">
+            <h2>{tr(col.title, lang)}</h2>
+            <ul>{col.links.map((l) => <li><a href={href(l.href, lang)}>{tr(l.label, lang)}</a></li>)}</ul>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="footer__reg">
+      <div class="reg-strip">
+        <span class="reg-strip__name">{company.legalName}</span>
+        {registrations.map((r) => (
+          <span class="reg-strip__item">
+            {r.short} <span class="mono">{r.value}</span>
+            <Verify reg={r} lang={lang} prefix="f" label={hi ? 'जाँचें' : 'Verify'} />
+          </span>
+        ))}
+        <span class="reg-strip__item">{hi ? 'इटावा, उत्तर प्रदेश 206001' : 'Etawah, Uttar Pradesh 206001'}</span>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>{hi ? `निगमन ${company.incorporated.hi}` : `Incorporated ${company.incorporated.en}`} · © 2026 {company.legalNameTitle}</span>
+      <ul role="list">
+        <li><a href={u('/privacy/')}>{hi ? 'गोपनीयता' : 'Privacy'}</a></li>
+        <li><a href={u('/terms/')}>{hi ? 'नियम' : 'Terms'}</a></li>
+        <li><a href={u('/sitemap/')}>{hi ? 'साइटमैप' : 'Sitemap'}</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

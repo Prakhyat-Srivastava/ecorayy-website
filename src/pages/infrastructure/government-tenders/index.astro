@@ -1,0 +1,123 @@
+---
+import { u } from '../../../lib/url';
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import Img from '../../../components/Img.astro';
+import Verify from '../../../components/Verify.astro';
+import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
+import EnquiryForm from '../../../components/EnquiryForm.astro';
+import Certificate from '../../../components/Certificate.astro';
+import { company, directors, registrations } from '../../../data/site';
+import { services } from '../../../data/infrastructure';
+const updated = '13 October 2026';
+const issued: Record<string, string> = {
+  cin: '24 Jun 2026 (incorporation)',
+  gstin: '-',
+  udyam: '-',
+  dpiit: '24 Sep 2026 · valid to 23 Jun 2036',
+};
+---
+<Base title="Government & tenders" description="Registrations, eligibility and scope of work for procurement officers: CIN, GSTIN, Udyam, DPIIT recognition, Directors, and a downloadable company profile and registrations pack." ogImage="dl01">
+  <section class="section section--tight">
+    <div class="container doc-page">
+      <Breadcrumbs items={[{ label: 'Home', href: u('/') }, { label: 'Infrastructure', href: u('/infrastructure/') }, { label: 'Government & tenders' }]} />
+      <div class="stack" style="--stack:16px;margin-top:16px">
+        <span class="label">Government & tenders</span>
+        <h1 class="h1">For procurement officers: the facts, in one place.</h1>
+        <p class="lead">Three questions decide whether a vendor is worth considering. Here are our answers, with dates and verification steps for each.</p>
+        <div class="doc-meta"><span><Icon name="calendar" size={16} class="inline-icon" /> Last updated {updated}</span><span><Icon name="building" size={16} class="inline-icon" /> {company.legalName}</span></div>
+        <div class="cluster no-print">
+          <a class="btn" href="#pack"><Icon name="download" />Company profile & registrations pack</a>
+          <button class="btn btn--quiet" type="button" onclick="window.print()"><Icon name="print" />Print this page</button>
+        </div>
+      </div>
+
+      <div class="doc-section" style="margin-top:40px" id="real">
+        <span class="doc-section__num">01</span>
+        <h2 class="h2">Is it real?</h2>
+        <table class="doc-table">
+          <thead><tr><th>Registration</th><th>Number</th><th>Date</th><th>Verify</th></tr></thead>
+          <tbody>
+            {registrations.map((r) => (
+              <tr>
+                <td><strong>{r.label.en}</strong><br /><span class="caption">{r.issuer.en}</span></td>
+                <td class="mono">{r.value}</td>
+                <td>{issued[r.key]}</td>
+                <td><Verify reg={r} lang="en" prefix="gov" label="Verify" /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <dl class="kv">
+          <dt>Legal name</dt><dd>{company.legalName}</dd>
+          <dt>Registered office</dt><dd>{company.registeredOffice.oneLine}</dd>
+          <dt>Incorporated</dt><dd>{company.incorporated.en}, {company.roc}</dd>
+        </dl>
+        <Certificate id="gov" />
+        <h3 class="h4">Directors</h3>
+        <div class="people-mini" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+          {directors.map((d) => (
+            <a class="person-mini" href={u('/about/team/')}>
+              <span class="avatar" style="--size:72px"><Img id={d.circle as any} sizes="72px" widths={[72, 144]} tag={false} /></span>
+              <span><strong>{d.name}</strong><span class="role-label">Director</span></span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="doc-section" id="eligible">
+        <span class="doc-section__num">02</span>
+        <h2 class="h2">Is it eligible?</h2>
+        <p class="lead" style="color:var(--ink)"><strong>Ecorayy Power Tech is a DPIIT-recognised startup and a Udyam-registered micro enterprise.</strong></p>
+        <div class="prose">
+          <p>Under the General Financial Rules, central government procurement provides relaxations for DPIIT-recognised startups on Earnest Money Deposit (Rule 170) and on prior experience and prior turnover requirements (Rule 173), and similar provisions apply on the Government e-Marketplace (GeM). The Public Procurement Policy for Micro and Small Enterprises has its own provisions for Udyam-registered enterprises.</p>
+          <p>State procurement rules, including Uttar Pradesh’s, may differ. Whether any relaxation applies is decided by the terms of each tender.</p>
+        </div>
+      </div>
+
+      <div class="doc-section" id="execute">
+        <span class="doc-section__num">03</span>
+        <h2 class="h2">Can it execute?</h2>
+        <h3 class="h4">Scope of work we take on</h3>
+        <ul class="ticks" role="list">
+          {services.map((s) => <li><Icon name="check" /><span><a href={u(`/infrastructure/${s.slug}/`)}>{s.name}</a>, {s.short}</span></li>)}
+          <li><Icon name="check" /><span><a href={u('/solar/pumps/')}>Solar pumps</a> and <a href={u('/solar/parks-epc/')}>solar plants (EPC)</a></span></li>
+        </ul>
+        <div class="grid card-grid-2" style="margin-top:8px">
+          <div class="card card--pad" data-sample="Team & equipment (D6, E4)">
+            <h3 class="h4">Team and equipment</h3>
+            <p class="muted small" style="margin-top:6px">The project team, their relevant experience and our equipment will be listed here with photographs.</p>
+          </div>
+          <div class="card card--pad">
+            <h3 class="h4">Completed projects</h3>
+            <p class="muted small" style="margin-top:6px">None listed yet. Completed public projects will appear here with the client’s name (with permission), location, scope and completion date.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-section" id="pack">
+        <span class="doc-section__num">04</span>
+        <h2 class="h2">Download the pack</h2>
+        <div class="split" style="align-items:center">
+          <div class="stack" style="--stack:14px">
+            <p>One file with the company profile, scope of work, Directors and copies of our registration certificates, kept small so it can be attached to bids.</p>
+            <div class="dl-row" data-sample="Pack not yet available (E2, A9)">
+              <span class="dl-row__icon"><Icon name="file" /></span>
+              <span><strong>Company profile & registrations pack</strong><span>PDF · under 5 MB · available before launch</span></span>
+              <button class="btn btn--quiet btn--sm" type="button" disabled>Soon</button>
+            </div>
+            <p class="caption">Full certificates are shared only in this pack, not as images on public pages.</p>
+          </div>
+          <div class="frame frame--4x3"><Img id="dl01" sizes="(min-width: 900px) 40vw, 100vw" /></div>
+        </div>
+      </div>
+
+      <div class="doc-section no-print" id="contact">
+        <span class="doc-section__num">05</span>
+        <h2 class="h2">Tender enquiries</h2>
+        <p class="muted" data-sample="Tender contact (B7)">A named tender contact with a direct number will be listed here. Meanwhile, send your enquiry below, include the tender reference if you have one.</p>
+        <EnquiryForm intent="government" id="tender-form" />
+      </div>
+    </div>
+  </section>
+</Base>

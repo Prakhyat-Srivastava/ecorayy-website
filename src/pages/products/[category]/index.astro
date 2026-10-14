@@ -1,0 +1,9 @@
+---
+import CategoryView from '../../../views/CategoryView.astro';
+import { categories, getCategory } from '../../../data/products';
+export function getStaticPaths() {
+  return categories.map((c) => ({ params: { category: c.slug } }));
+}
+const category = getCategory(Astro.params.category!)!;
+---
+<CategoryView category={category} />

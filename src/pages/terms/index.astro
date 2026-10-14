@@ -1,0 +1,15 @@
+---
+import { u } from '../../lib/url';
+import LegalPage from '../../components/ui/LegalPage.astro';
+import { company } from '../../data/site';
+---
+<LegalPage title="Terms of use" description="Terms of use for the Ecorayy website." note="This is a structural draft for legal review. Final terms will be confirmed before launch." sample="Terms, lawyer review (I2)">
+  <h2>About this website</h2>
+  <p>This website is operated by {company.legalName}. Information about products and services is provided for general guidance; prices and specifications are confirmed in a written quote.</p>
+  <h2>Quotes and enquiries</h2>
+  <p>A Quote List or enquiry is not an order. No contract is formed until we confirm a quote in writing and you accept it.</p>
+  <h2>Estimates</h2>
+  <p>Solar estimates on this website are indicative and based on stated assumptions. A site survey confirms actual figures.</p>
+  <h2>Contact</h2>
+  <p>Questions about these terms: see <a href={u('/contact/')}>Contact</a>.</p>
+</LegalPage>

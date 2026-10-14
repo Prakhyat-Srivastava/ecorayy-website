@@ -1,0 +1,57 @@
+---
+import { u } from '../../../lib/url';
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import PageHero from '../../../components/ui/PageHero.astro';
+import SectionHead from '../../../components/ui/SectionHead.astro';
+import Steps from '../../../components/ui/Steps.astro';
+import CtaBand from '../../../components/ui/CtaBand.astro';
+const resources = [
+  { icon: 'cable', t: 'Wire sizes, explained', d: 'Every size and insulation type has a one-line explanation where you choose it.', href: u('/products/wires-cables/') },
+  { icon: 'breaker', t: 'MCB curves and RCCB sensitivity', d: 'B or C curve, 30 or 100 mA, explained in plain words in the filters.', href: u('/products/switchgear-panels/') },
+  { icon: 'table', t: 'Compare variants in a table', d: 'Sortable tables for wires and switchgear on desktop, by size, rating or poles.', href: u('/products/switchgear-panels/?view=table') },
+  { icon: 'search', t: 'Search by value or SKU', d: 'Type “2.5 sq mm”, “32A MCB” or a part number, and everyday words like “taar”.', href: u('/search/') },
+];
+---
+<Base title="For electricians & contractors" description="Clear specifications, plain explanations and a Quote List you can share with your customer, built for electricians and contractors." ogImage="ptn02">
+  <PageHero
+    crumbs={[{ label: 'Home', href: u('/') }, { label: 'Partners', href: u('/partners/') }, { label: 'Electricians & contractors' }]}
+    label="Electricians & contractors"
+    title="The right size, first time, and a list your customer can approve."
+    lead="Clear specifications, values you can filter by, and a Quote List you can share on WhatsApp with the homeowner or site engineer."
+    image="ptn02"
+  >
+    <a class="btn" href={u('/products/')} style="justify-self:start">Browse products<Icon name="arrow-right" /></a>
+  </PageHero>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label="Technical resources" title="Built for people who wire buildings." />
+      <div class="grid card-grid-2">
+        {resources.map((r, i) => (
+          <article class="card card--link reveal" data-delay={i % 2}>
+            <div class="card__body"><span class="icon-circle icon-circle--lg"><Icon name={r.icon} /></span><h3 class="card__title"><a class="card__link" href={r.href}>{r.t}</a></h3><p class="card__text">{r.d}</p></div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead label="Share with your customer" title="Build the list. Share it. Get it approved." />
+      <Steps horizontal steps={[
+        { icon: 'plus', title: 'Add as you browse', text: 'Wire in four sizes, switches, sockets, MCBs and a DB, all in one list.' },
+        { icon: 'share', title: 'Share a link', text: 'Send it on WhatsApp. It opens the same list on their phone.' },
+        { icon: 'print', title: 'Or save a PDF', text: 'A clean, branded summary to print or forward.' },
+        { icon: 'check-circle', title: 'Send one enquiry', text: 'The whole list goes with your request, no retyping.' },
+      ]} />
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <CtaBand title="Working on a job right now?" text="Start a Quote List, or send us the requirement as you’d write it on paper, we’ll work it out." primary={{ label: 'Send a requirement', href: u('/contact/?intent=products') }} secondary={{ label: 'Open my Quote List', href: u('/quote/list/') }} />
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,82 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import Steps from '../../components/ui/Steps.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import EnquiryForm from '../../components/EnquiryForm.astro';
+import { services, getService } from '../../data/infrastructure';
+import { getFamily, type Family } from '../../data/products';
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { service: s.slug } }));
+}
+const s = getService(Astro.params.service!)!;
+const related = s.related.map(getFamily).filter(Boolean) as Family[];
+const others = services.filter((x) => x.slug !== s.slug);
+---
+<Base title={s.name} description={s.lead} ogImage={s.image}>
+  <PageHero
+    crumbs={[{ label: 'Home', href: u('/') }, { label: 'Infrastructure', href: u('/infrastructure/') }, { label: s.name }]}
+    label={s.name}
+    title={s.title}
+    lead={s.lead}
+    image={s.image}
+  >
+    <div class="cluster">
+      <a class="btn" href="#enquire">Discuss a project<Icon name="arrow-right" /></a>
+      <a class="btn btn--secondary" href={u('/infrastructure/government-tenders/')}><Icon name="landmark" />Government & tenders</a>
+    </div>
+  </PageHero>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label="What we supply and install" title="Everything the job needs." />
+      <div class="tile-icons" style="--n:4">
+        {s.supply.map((x, i) => <div class="tile-icon reveal" data-delay={i}><span class="icon-circle icon-circle--lg"><Icon name={s.icon} /></span><h3>{x.t}</h3><p>{x.d}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split" style="align-items:start">
+      <div>
+        <SectionHead label="Typical project scope" title="How a project runs." />
+        <Steps steps={s.scope.map((t) => ({ title: t, text: '' }))} />
+      </div>
+      <div class="card card--pad reveal dot-grid-soft" data-sample="Sample specification ranges (E5)">
+        <h3 class="h4" style="margin-bottom:12px">Typical specification ranges</h3>
+        <table class="spec-table"><tbody>{s.specs.map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}</tbody></table>
+        <p class="caption" style="margin-top:12px">Exact specifications follow each tender or project requirement.</p>
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section section--paper">
+      <div class="container">
+        <SectionHead label="Related products" title="Products used in this work." />
+        <div class="product-grid">{related.map((f) => <ProductCard family={f} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="section" id="enquire">
+    <div class="container contact-layout">
+      <div>
+        <SectionHead label="Enquire" title="Discuss a project" text="Share the location, scope and any tender reference. All fields beyond the first four are optional." />
+        <EnquiryForm intent="government" id="infra-form" />
+      </div>
+      <aside class="contact-aside">
+        <div class="card">
+          <h2 class="h4">Other infrastructure work</h2>
+          <ul class="contact-list" role="list">
+            {others.map((o) => <li><a class="contact-item" href={u(`/infrastructure/${o.slug}/`)} style="text-decoration:none;color:inherit"><span class="icon-circle"><Icon name={o.icon} /></span><span><strong>{o.name}</strong><span>{o.short}</span></span></a></li>)}
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,31 @@
+---
+import { u } from '../lib/url';
+/** The two Directors presented together as one cohesive pair (About page). */
+import Img from './Img.astro';
+import Icon from './Icon.astro';
+import { directors } from '../data/site';
+---
+<section class="section" aria-labelledby="pair-title">
+  <div class="container pair">
+    <div class="pair__art reveal">
+      <span class="pair__ring" aria-hidden="true"></span>
+      {directors.map((d, i) => (
+        <figure class:list={['pair__fig', `pair__fig--${i + 1}`]}>
+          <a class="pair__card" href={u('/about/team/')} aria-label={`${d.name}, Director`}>
+            <Img id={d.image as any} sizes="(min-width: 960px) 26vw, 56vw" widths={[320, 480, 720, 960]} tag={false} position={i === 0 ? '46% 14%' : '38% 12%'} />
+          </a>
+          <figcaption><strong>{d.name}</strong><span class="role-label">Director</span></figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="pair__copy reveal" data-delay="1">
+      <span class="label">Leadership</span>
+      <h2 id="pair-title" class="h2">Two Directors, accountable together.</h2>
+      <p class="lead">Ecorayy is led by its Directors, who share responsibility for every promise the company makes and every project it takes on.</p>
+      <div class="pair__bios" data-sample="Bio drafts awaiting approval (L5/L6)">
+        {directors.map((d) => <div class="pair__bio"><strong>{d.name} · Director</strong><p>{d.short.en}</p></div>)}
+      </div>
+      <a class="link-arrow" href={u('/about/team/')}>Read about our leadership<Icon name="arrow-right" /></a>
+    </div>
+  </div>
+</section>

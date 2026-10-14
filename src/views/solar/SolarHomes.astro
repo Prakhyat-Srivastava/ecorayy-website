@@ -1,0 +1,85 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Img from '../../components/Img.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import Steps from '../../components/ui/Steps.astro';
+import Faq from '../../components/ui/Faq.astro';
+import EnquiryForm from '../../components/EnquiryForm.astro';
+import { href } from '../../data/i18n';
+import type { Lang } from '../../data/site';
+import { solarSteps } from './steps';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+const checks = [
+  { icon: 'ruler', t: H('Enough roof space', 'छत पर पर्याप्त जगह'), d: H('Roughly 100 sq ft of shade-free roof per kW. A 3 kW system needs about 300 sq ft.', 'हर kW के लिए लगभग 100 वर्ग फ़ुट छाया-रहित छत। 3 kW के लिए करीब 300 वर्ग फ़ुट।') },
+  { icon: 'sun', t: H('Sun for most of the day', 'दिन भर धूप'), d: H('South-facing, without tall buildings or trees shading it between 9 am and 4 pm.', 'दक्षिण की ओर, सुबह 9 से शाम 4 बजे तक ऊँची इमारतों या पेड़ों की छाया के बिना।') },
+  { icon: 'home', t: H('Your own roof', 'अपनी छत'), d: H('You own the roof, or the owner and society agree to the installation.', 'छत आपकी है, या मालिक और सोसाइटी इंस्टॉलेशन के लिए सहमत हैं।') },
+];
+const faqs = [
+  { q: H('How much roof space do I need?', 'मुझे कितनी छत चाहिए?'), a: H('About 100 sq ft of shade-free roof for every kW. Because we mount panels on an elevated frame, you can still use the terrace underneath.', 'हर kW के लिए लगभग 100 वर्ग फ़ुट छाया-रहित छत। पैनल ऊँचे ढाँचे पर लगते हैं, इसलिए नीचे की छत इस्तेमाल में रहती है।') },
+  { q: H('Do panels work on cloudy days?', 'क्या बादल वाले दिन पैनल काम करते हैं?'), a: H('Yes, but they produce less. Estimates use yearly averages, which already include cloudy and monsoon days.', 'हाँ, लेकिन कम बिजली बनती है। अनुमान सालाना औसत पर होते हैं, जिसमें बादल और बारिश के दिन शामिल हैं।') },
+  { q: H('What is net metering?', 'नेट मीटरिंग क्या है?'), a: H('A two-way meter records the power you take from the grid and the surplus you send back. You pay only for the difference.', 'एक दो-तरफ़ा मीटर ग्रिड से ली गई और ग्रिड को भेजी गई बिजली दर्ज करता है। आप केवल अंतर का भुगतान करते हैं।') },
+  { q: H('What maintenance is needed?', 'रखरखाव में क्या करना होता है?'), a: H('Mostly cleaning the panels with water every few weeks, especially in dusty months. We’ll show you how at handover.', 'मुख्य रूप से हर कुछ हफ़्तों में पानी से पैनल साफ़ करना, ख़ासकर धूल वाले महीनों में। हैंडओवर पर हम तरीका बताएँगे।') },
+  { q: H('Will I have power during a power cut?', 'क्या बिजली कटौती में बिजली मिलेगी?'), a: H('A standard on-grid system switches off during a grid failure, for safety. If backup matters to you, ask us about a hybrid system with a battery.', 'सुरक्षा के लिए, सामान्य ऑन-ग्रिड सिस्टम ग्रिड बंद होने पर बंद हो जाता है। बैकअप चाहिए तो बैटरी वाले हाइब्रिड सिस्टम के बारे में पूछें।') },
+];
+---
+<Base lang={lang} title={H('Solar for homes', 'घरों के लिए सोलर')} description={H('Rooftop solar for your home, sized to your bill. Five clear steps from survey to switch-on, with a savings estimator that shows every assumption.', 'आपके घर के लिए रूफ़टॉप सोलर, आपके बिल के हिसाब से।')} ogImage="sol02">
+  <PageHero
+    lang={lang}
+    crumbs={[{ label: H('Home', 'होम'), href: href('/', lang) }, { label: H('Solar', 'सोलर'), href: href('/solar/', lang) }, { label: H('Homes', 'घर') }]}
+    label={H('Solar for homes', 'घरों के लिए सोलर')}
+    title={H('Rooftop solar, sized to your bill.', 'रूफ़टॉप सोलर, आपके बिल के हिसाब से।')}
+    lead={H('Panels on an elevated frame, so your terrace stays usable. A clear process from survey to net meter, and someone to call afterwards.', 'ऊँचे ढाँचे पर पैनल, ताकि आपकी छत इस्तेमाल में रहे। सर्वे से नेट मीटर तक साफ़ प्रक्रिया, और बाद में बात करने के लिए कोई।')}
+    image="sol02"
+  >
+    <div class="cluster">
+      <a class="btn" href="#survey">{H('Book a site survey', 'साइट सर्वे बुक करें')}<Icon name="arrow-right" /></a>
+      <a class="btn btn--secondary" href={href('/solar/estimator/', lang)}><Icon name="calculator" />{H('Estimate savings', 'बचत का अनुमान')}</a>
+    </div>
+  </PageHero>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label={H('Before you start', 'शुरू करने से पहले')} title={H('Is my roof suitable?', 'क्या मेरी छत उपयुक्त है?')} text={H('Three quick checks. If you’re unsure about any of them, the site survey will answer it.', 'तीन आसान जाँच। किसी में भी संदेह हो, तो साइट सर्वे में जवाब मिल जाएगा।')} />
+      <div class="tile-icons" style="--n:3">
+        {checks.map((c, i) => <div class="tile-icon reveal" data-delay={i}><span class="icon-circle icon-circle--lg"><Icon name={c.icon} /></span><h3>{c.t}</h3><p>{c.d}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split split--wide-text" style="align-items:start">
+      <div>
+        <SectionHead label={H('The process', 'प्रक्रिया')} title={H('Five steps. Here’s who does what.', 'पाँच कदम। कौन क्या करता है।')} text={H('Exact timings depend on your DISCOM and site. We confirm them at the survey.', 'सटीक समय आपकी DISCOM और साइट पर निर्भर है, सर्वे में हम बताते हैं।')} />
+        <Steps steps={solarSteps(lang)} whoLabel={H('Who', 'कौन')} youLabel={H('You', 'आप')} />
+      </div>
+      <div class="reveal" style="position:sticky;top:100px">
+        <div class="frame frame--4x5"><Img id="sol01" lang={lang} sizes="(min-width: 900px) 38vw, 100vw" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container container--narrow">
+      <SectionHead label={H('Questions', 'प्रश्न')} title={H('What homeowners usually ask', 'घर के मालिक अक्सर क्या पूछते हैं')} />
+      <Faq items={faqs} sample="Sample FAQs, engineer review" />
+    </div>
+  </section>
+
+  <section class="section" id="survey">
+    <div class="container contact-layout">
+      <div>
+        <SectionHead label={H('Free site survey', 'मुफ़्त साइट सर्वे')} title={H('Book a site survey', 'साइट सर्वे बुक करें')} text={H('Four details. We’ll call to fix a time that suits you.', 'चार विवरण। हम आपके सुविधाजनक समय के लिए कॉल करेंगे।')} />
+        <EnquiryForm lang={lang} intent="solar" id="survey-form" />
+      </div>
+      <aside class="contact-aside">
+        <div class="card"><h2 class="h4">{H('Not ready yet?', 'अभी तैयार नहीं?')}</h2><p class="muted small">{H('See your likely system size, cost and savings first. No sign-up.', 'पहले अपना संभावित सिस्टम साइज़, लागत और बचत देखें, बिना साइन-अप।')}</p><a class="btn btn--secondary" href={href('/solar/estimator/', lang)}><Icon name="calculator" />{H('Open the estimator', 'अनुमान खोलें')}</a></div>
+      </aside>
+    </div>
+  </section>
+</Base>

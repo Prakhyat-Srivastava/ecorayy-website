@@ -1,0 +1,45 @@
+---
+import { u } from '../../../lib/url';
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import PageHero from '../../../components/ui/PageHero.astro';
+import SectionHead from '../../../components/ui/SectionHead.astro';
+import EnquiryForm from '../../../components/EnquiryForm.astro';
+const who = [
+  { icon: 'building', t: 'Builders & developers', d: 'Apartments, villas and commercial buildings.' },
+  { icon: 'tool', t: 'Electrical contractors', d: 'Projects where one supplier for the whole BOQ saves time.' },
+  { icon: 'landmark', t: 'Institutions', d: 'Schools, hospitals, campuses and offices.' },
+];
+---
+<Base title="Bulk & project supply" description="One quote for a whole building, campus or project, wires, switches, switchgear, lighting and solar from one supplier." ogImage="ptn03">
+  <PageHero
+    crumbs={[{ label: 'Home', href: u('/') }, { label: 'Partners', href: u('/partners/') }, { label: 'Bulk & project supply' }]}
+    label="Bulk & project supply"
+    title="One quote for the whole project."
+    lead="Wires, switches, switchgear, lighting and solar from one supplier, quoted together, with deliveries planned around your site schedule."
+    image="ptn03"
+  >
+    <a class="btn" href="#bulk" style="justify-self:start">Request a project quote<Icon name="arrow-right" /></a>
+  </PageHero>
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label="Who it’s for" title="Projects of every size." />
+      <div class="tile-icons" style="--n:3">{who.map((w, i) => <div class="tile-icon reveal" data-delay={i}><span class="icon-circle icon-circle--lg"><Icon name={w.icon} /></span><h3>{w.t}</h3><p>{w.d}</p></div>)}</div>
+    </div>
+  </section>
+  <section class="section" id="bulk">
+    <div class="container contact-layout">
+      <div>
+        <SectionHead label="Request" title="Send your BOQ or list" text="Build a Quote List from the catalogue, or paste your bill of quantities into the message. Both work." />
+        <EnquiryForm intent="products" id="bulk-form" />
+      </div>
+      <aside class="contact-aside">
+        <div class="card">
+          <h2 class="h4">Tip: use the Quote List</h2>
+          <p class="muted small">Add items with the right units, coils, drums, boxes or pieces, then share the link with your purchase team before you send.</p>
+          <a class="btn btn--secondary btn--sm" href={u('/products/')}><Icon name="box" />Browse products</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>

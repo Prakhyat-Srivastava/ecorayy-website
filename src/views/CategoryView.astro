@@ -1,0 +1,234 @@
+---
+import { u } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import Img from '../components/Img.astro';
+import Icon from '../components/Icon.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import CtaBand from '../components/ui/CtaBand.astro';
+import { getImage } from 'astro:assets';
+import { images } from '../data/images';
+import {
+  CCT_SWATCH, categories, categoryUrl, familiesIn, familyUrl, toNum, type Attr, type Category, type Sub,
+} from '../data/products';
+
+interface Props { category: Category; sub?: Sub }
+const { category: c, sub } = Astro.props;
+const fams = familiesIn(c.slug, sub?.slug);
+const attrs: Attr[] = sub?.attrs ?? c.attrs;
+const promoted = attrs.filter((a) => a.promoted);
+const title = sub?.name ?? c.name;
+const intro = sub?.description ?? c.description;
+const heroImg = sub?.image ?? c.image;
+const showTable = c.tableView === true;
+
+// Options per attribute, ordered numerically where it makes sense.
+const optionsFor = (a: Attr) => {
+  const vals = [...new Set(fams.flatMap((f) => f.variants.map((v) => v.v[a.key])).filter(Boolean))];
+  return a.numeric ? vals.sort((x, y) => toNum(x) - toNum(y)) : vals.sort((x, y) => x.localeCompare(y, 'en', { numeric: true }));
+};
+const usable = attrs.filter((a) => optionsFor(a).length > 1);
+const numericSort = usable.find((a) => a.numeric && a.promoted) ?? usable.find((a) => a.numeric);
+
+// Thumbs for table rows / quote items.
+const thumbs: Record<string, string> = {};
+for (const f of fams) thumbs[f.slug] = (await getImage({ src: images[f.image].src, width: 160, height: 160, fit: 'cover', format: 'webp', quality: 70 })).src;
+
+const data = {
+  attrs: usable.map((a) => ({ key: a.key, label: a.label, numeric: !!a.numeric })),
+  sortKey: numericSort?.key ?? null,
+  families: fams.map((f, i) => ({
+    slug: f.slug, name: f.name, order: i, isNew: !!f.isNew, unit: f.unit, img: thumbs[f.slug], url: familyUrl(f),
+    variants: f.variants.map((v) => ({ sku: v.sku, label: v.label, v: v.v })),
+  })),
+};
+const tableCols = usable.filter((a) => a.promoted).concat(usable.filter((a) => !a.promoted).slice(0, 1));
+const crumbs = [
+  { label: 'Home', href: u('/') },
+  { label: 'Products', href: u('/products/') },
+  ...(sub ? [{ label: c.name, href: categoryUrl(c.slug) }] : []),
+  { label: title },
+];
+const variantTotal = fams.reduce((s, f) => s + f.variants.length, 0);
+---
+<Base title={title} description={`${intro} Sample catalogue, ${fams.length} product families, ${variantTotal} variants.`} ogImage={heroImg}>
+  <section class="cat-hero">
+    <div class="container cat-hero__grid">
+      <div class="page-hero__copy">
+        <Breadcrumbs items={crumbs} />
+        <span class="label">{sub ? c.name : 'Products'}</span>
+        <h1 class="h1">{title}</h1>
+        <p class="lead">{intro}</p>
+        <p class="caption cat-hero__meta" data-sample="Sample catalogue (C1)"><span class="mono">{fams.length}</span> product {fams.length === 1 ? 'family' : 'families'} · <span class="mono">{variantTotal}</span> variants · sample catalogue</p>
+      </div>
+      <div class="frame frame--4x3 cat-hero__img"><Img id={heroImg} eager sizes="(min-width: 960px) 36vw, 100vw" /></div>
+    </div>
+  </section>
+
+  {c.subs && !sub && (
+    <section class="container subcats" aria-label="Lighting types">
+      {c.subs.map((s) => (
+        <a class="subcat" href={categoryUrl(c.slug, s.slug)}>
+          <span class="frame"><Img id={s.image} sizes="96px" widths={[120, 200]} tag={false} /></span>
+          <span><strong>{s.name}</strong><span>{s.short}</span></span>
+          <Icon name="arrow-right" />
+        </a>
+      ))}
+    </section>
+  )}
+
+  <section class="section section--tight catalogue" data-catalogue>
+    <div class="container">
+      <div class="filterbar" data-filterbar>
+        <div class="filterbar__row">
+          {promoted.filter((a) => usable.includes(a)).map((a) => (
+            <div class="fchip" data-fchip={a.key}>
+              <button class="chip" type="button" aria-expanded="false" aria-controls={`fpop-${a.key}`}>
+                {a.label}<span class="count" data-fcount hidden></span><Icon name="chevron-down" />
+              </button>
+            </div>
+          ))}
+          <button class="chip" type="button" data-open-filters><Icon name="sliders" />All filters<span class="count" data-fcount-all hidden></span></button>
+          <div class="filterbar__end">
+            <label class="visually-hidden" for="sort">Sort by</label>
+            <select class="select sort-select" id="sort" data-sort>
+              <option value="rec">Recommended</option>
+              <option value="new">Newest</option>
+              {numericSort && <option value="asc">{numericSort.label}: low to high</option>}
+              {numericSort && <option value="desc">{numericSort.label}: high to low</option>}
+              <option value="name">Name A–Z</option>
+            </select>
+            {showTable && (
+              <div class="view-toggle" role="group" aria-label="View">
+                <button type="button" aria-pressed="true" data-view="grid"><Icon name="grid" />Cards</button>
+                <button type="button" aria-pressed="false" data-view="table"><Icon name="table" />Table</button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Filter popovers (one per promoted attribute) */}
+      {usable.map((a) => (
+        <div class="fpop" id={`fpop-${a.key}`} data-fpop={a.key} role="dialog" aria-label={a.label} hidden>
+          <div class="fpop__title"><span>{a.label}</span><button class="icon-btn" type="button" data-fpop-close aria-label="Close" style="width:36px;height:36px"><Icon name="close" /></button></div>
+          {a.help && <p class="fhelp"><Icon name="info" size={16} class="inline-icon" /> {a.help}</p>}
+          <div>
+            {optionsFor(a).map((o) => (
+              <label class="fopt" data-opt={o}>
+                <input type="checkbox" data-fkey={a.key} value={o} />
+                <span class="fopt__label">{a.swatch && <span class="chip__swatch" style={`background:${CCT_SWATCH[o] ?? '#fff'}`}></span>}{o}</span>
+                <span class="fopt__count" data-optcount></span>
+              </label>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <div class="applied" data-applied aria-live="polite"></div>
+      <div class="results-head">
+        <p class="results-count" data-results-count aria-live="polite"><strong>{fams.length}</strong> products</p>
+      </div>
+
+      <div class="results" data-results>
+        <div class="product-grid" data-grid>
+          {fams.map((f) => <ProductCard family={f} />)}
+        </div>
+        {showTable && (
+          <div class="vtable-wrap" data-table hidden>
+            <table class="vtable">
+              <caption class="visually-hidden">{title}, all variants</caption>
+              <thead>
+                <tr>
+                  <th scope="col"><button type="button" data-tsort="name">Product<Icon name="sort" /></button></th>
+                  <th scope="col">SKU</th>
+                  {tableCols.map((a) => <th scope="col"><button type="button" data-tsort={a.key}>{a.label}<Icon name="sort" /></button><span class="sort-dir" data-sort-dir></span></th>)}
+                  <th scope="col"><span class="visually-hidden">Add</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                {fams.flatMap((f) => f.variants.map((v) => (
+                  <tr data-sku={v.sku} data-family={f.slug}>
+                    <td><a href={`${familyUrl(f)}?v=${v.sku}`}>{f.name}</a></td>
+                    <td class="mono">{v.sku}</td>
+                    {tableCols.map((a) => <td class="mono" data-k={a.key}>{v.v[a.key] ?? '-'}</td>)}
+                    <td>
+                      <button class="btn btn--secondary" type="button" data-add-quote
+                        data-item={JSON.stringify({ sku: v.sku, name: f.name, variant: v.label, unit: f.unit, img: thumbs[f.slug], url: `${familyUrl(f)}?v=${v.sku}` })}>
+                        <Icon name="plus" /><span data-label>Add</span>
+                      </button>
+                    </td>
+                  </tr>
+                )))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <div class="no-results" data-no-results hidden>
+          <Icon name="search" />
+          <h2 class="h3">No products match all of these filters.</h2>
+          <p class="muted">Remove a filter, or send us your requirement and we’ll find it for you.</p>
+          <div class="cluster" style="justify-content:center">
+            <button class="btn btn--secondary" type="button" data-clear-filters>Clear all filters</button>
+            <a class="btn btn--quiet" href={u('/contact/?intent=products')}>Send your requirement</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {c.slug === 'lighting' && !sub && (
+    <section class="showroom">
+      <div class="frame frame--night frame--flush showroom__img"><Img id="prd06" sizes="100vw" widths={[800, 1280, 1920, 2400]} /></div>
+      <div class="container showroom__copy">
+        <span class="label">Showroom</span>
+        <h2 class="h2">See it switched on.</h2>
+        <p>A lit LED on a white page looks like a grey blob. Against the night, you can see what it actually does and pick the light colour that suits the room.</p>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="container">
+      <CtaBand
+        title="Can’t find exactly what you need?"
+        text="Many buyers know what they want better than any catalogue does. Tell us the size, rating or quantity and we’ll come back with options."
+        primary={{ label: 'Send your requirement', href: u('/contact/?intent=products') }}
+        secondary={{ label: 'Download the catalogue', href: u('/downloads/#products') }}
+      />
+    </div>
+  </section>
+
+  <dialog class="drawer" data-filters-drawer aria-labelledby="af-title">
+    <div class="drawer__head">
+      <h2 id="af-title" class="h4">All filters</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><Icon name="close" /></button>
+    </div>
+    <div class="drawer__body">
+      {usable.map((a) => (
+        <fieldset class="af-group">
+          <legend class="af-group__title">{a.label}</legend>
+          {a.help && <p class="fhelp">{a.help}</p>}
+          {optionsFor(a).map((o) => (
+            <label class="fopt" data-opt={o}>
+              <input type="checkbox" data-fkey={a.key} value={o} />
+              <span class="fopt__label">{a.swatch && <span class="chip__swatch" style={`background:${CCT_SWATCH[o] ?? '#fff'}`}></span>}{o}</span>
+              <span class="fopt__count" data-optcount></span>
+            </label>
+          ))}
+        </fieldset>
+      ))}
+    </div>
+    <div class="drawer__foot">
+      <button class="btn btn--block" type="button" data-close data-show-results>Show results</button>
+      <button class="btn btn--quiet btn--block btn--sm" type="button" data-clear-filters>Clear all</button>
+    </div>
+  </dialog>
+
+  <script type="application/json" data-catalogue-data set:html={JSON.stringify(data)} />
+</Base>
+
+<script>
+  import { initCatalogue } from '../scripts/catalogue';
+  initCatalogue();
+</script>

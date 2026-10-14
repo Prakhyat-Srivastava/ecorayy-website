@@ -1,0 +1,22 @@
+---
+import { basePath, hasHindi, ui } from '../data/i18n';
+import { u } from '../lib/url';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang; path: string; compact?: boolean }
+const { lang, path, compact = false } = Astro.props;
+const base = basePath(path);
+const hi = hasHindi(base);
+const enHref = u(base);
+const hiHref = u(base === '/' ? '/hi/' : `/hi${base}`);
+---
+<span class="lang-switch" role="group" aria-label={lang === 'hi' ? 'भाषा' : 'Language'}>
+  {lang === 'en'
+    ? <span aria-current="true" lang="en">{compact ? 'EN' : 'English'}</span>
+    : <a href={enHref} lang="en" hreflang="en" data-lang-link="en">{compact ? 'EN' : 'English'}</a>}
+  {lang === 'hi'
+    ? <span aria-current="true" class="hi" lang="hi">{compact ? 'हि' : 'हिन्दी'}</span>
+    : hi
+      ? <a href={hiHref} class="hi" lang="hi" hreflang="hi" data-lang-link="hi">{compact ? 'हि' : 'हिन्दी'}</a>
+      : <span class="hi is-unavailable" lang="hi" title={ui.en.hiUnavailable} aria-label={`हिन्दी: ${ui.en.hiUnavailable}`}>{compact ? 'हि' : 'हिन्दी'}</span>}
+</span>

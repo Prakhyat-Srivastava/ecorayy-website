@@ -1,0 +1,178 @@
+---
+import { u } from '../lib/url';
+/**
+ * One form, five purposes (strategy §9): Products · Solar · Government or
+ * project work · Become a dealer · Support. Four required fields in step 1,
+ * everything else optional in step 2. Spam is handled invisibly (honeypot).
+ */
+import Icon from './Icon.astro';
+import { contact, type Lang } from '../data/site';
+
+interface Props { lang?: Lang; intent?: string; showIntents?: boolean; id?: string }
+const { lang = 'en', intent = 'products', showIntents = false, id = 'enquiry' } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+
+const intents = [
+  { v: 'products', icon: 'box', t: H('Products', 'उत्पाद'), d: H('Prices, availability, bulk orders', 'कीमत, उपलब्धता, थोक ऑर्डर') },
+  { v: 'solar', icon: 'sun', t: H('Solar', 'सोलर'), d: H('Homes, businesses, pumps, site survey', 'घर, व्यवसाय, पंप, साइट सर्वे') },
+  { v: 'government', icon: 'landmark', t: H('Government or project work', 'सरकारी या प्रोजेक्ट कार्य'), d: H('Tenders, lighting, EPC', 'टेंडर, लाइटिंग, EPC') },
+  { v: 'dealer', icon: 'handshake', t: H('Become a dealer', 'डीलर बनें'), d: H('Dealers, distributors, retailers', 'डीलर, डिस्ट्रीब्यूटर, रिटेलर') },
+  { v: 'support', icon: 'wrench', t: H('Support', 'सहायता'), d: H('Warranty, after-sales, questions', 'वारंटी, बिक्री के बाद, प्रश्न') },
+];
+const roles = [
+  ['homeowner', H('Homeowner', 'मकान मालिक')],
+  ['electrician', H('Electrician / contractor', 'इलेक्ट्रीशियन / ठेकेदार')],
+  ['dealer', H('Dealer / retailer', 'डीलर / रिटेलर')],
+  ['distributor', H('Distributor', 'डिस्ट्रीब्यूटर')],
+  ['builder', H('Builder / developer', 'बिल्डर / डेवलपर')],
+  ['business', H('Business / institution', 'व्यवसाय / संस्थान')],
+  ['government', H('Government department / PSU', 'सरकारी विभाग / PSU')],
+];
+const strings = {
+  required: H('Please fill this in.', 'कृपया यह भरें।'),
+  name: H('Please enter your name.', 'कृपया अपना नाम लिखें।'),
+  mobile: H('Please enter a 10-digit mobile number.', 'कृपया 10 अंकों का मोबाइल नंबर लिखें।'),
+  location: H('Please enter your city or a 6-digit PIN code.', 'कृपया अपना शहर या 6 अंकों का पिन कोड लिखें।'),
+  role: H('Please choose one option.', 'कृपया एक विकल्प चुनें।'),
+  email: H('Please check the email address, or leave it empty.', 'कृपया ईमेल पता जाँचें, या इसे खाली छोड़ दें।'),
+  gstin: H('A GSTIN has 15 characters, like 09AAJCE7875P2ZI. You can also leave it empty.', 'GSTIN में 15 अक्षर होते हैं, जैसे 09AAJCE7875P2ZI। आप इसे खाली भी छोड़ सकते हैं।'),
+  step: H('Step {n} of 2', 'चरण {n} / 2'),
+  sending: H('Preparing your request…', 'आपका अनुरोध तैयार हो रहा है…'),
+};
+---
+<form class="enquiry" id={id} data-enquiry data-intent={intent} data-lang={lang} data-hours={JSON.stringify(contact.hoursSpec)} data-strings={JSON.stringify(strings)} novalidate>
+  {showIntents && (
+    <fieldset class="enquiry__intents" data-intents>
+      <legend class="field__label">{H('What can we help with?', 'हम किसमें मदद कर सकते हैं?')}</legend>
+      <div class="intent-grid">
+        {intents.map((it) => (
+          <label class="intent">
+            <input type="radio" name="intent" value={it.v} checked={it.v === intent} />
+            <span class="intent__box">
+              <span class="icon-circle"><Icon name={it.icon} /></span>
+              <span><strong>{it.t}</strong><span>{it.d}</span></span>
+            </span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  )}
+  {!showIntents && <input type="hidden" name="intent" value={intent} />}
+
+  <div class="enquiry__panel" data-panel>
+    <div class="enquiry__progress" aria-hidden="true">
+      <span data-step-label>{strings.step.replace('{n}', '1')}</span>
+      <span class="enquiry__bar"><span data-step-bar></span></span>
+    </div>
+
+    <div class="enquiry__items" data-attached hidden></div>
+
+    <fieldset class="enquiry__step" data-step="1">
+      <legend class="visually-hidden">{H('Your contact details', 'आपका संपर्क विवरण')}</legend>
+      <div class="enquiry__grid">
+        <div class="field">
+          <label class="field__label" for={`${id}-name`}>{H('Your name', 'आपका नाम')}</label>
+          <input class="input" id={`${id}-name`} name="name" autocomplete="name" required maxlength="80" />
+          <p class="field__error" id={`${id}-name-err`}><Icon name="alert" /><span></span></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for={`${id}-mobile`}>{H('Mobile number', 'मोबाइल नंबर')}</label>
+          <div class="input-group">
+            <span class="input-group__prefix">+91</span>
+            <input class="input" id={`${id}-mobile`} name="mobile" type="tel" inputmode="numeric" autocomplete="tel-national" required maxlength="14" placeholder="98765 43210" />
+          </div>
+          <p class="field__error"><Icon name="alert" /><span></span></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for={`${id}-location`}>{H('City or PIN code', 'शहर या पिन कोड')}</label>
+          <input class="input" id={`${id}-location`} name="location" autocomplete="address-level2" required maxlength="60" />
+          <p class="field__error"><Icon name="alert" /><span></span></p>
+        </div>
+      </div>
+      <fieldset class="field" data-field="role">
+        <legend class="field__label">{H('I am a…', 'मैं हूँ…')}</legend>
+        <div class="choice-group">
+          {roles.map(([v, l]) => <label class="choice"><input type="radio" name="role" value={v} required /><span>{l}</span></label>)}
+        </div>
+        <p class="field__error"><Icon name="alert" /><span></span></p>
+      </fieldset>
+      <div class="enquiry__actions">
+        <button class="btn" type="button" data-next>{H('Continue', 'आगे बढ़ें')}<Icon name="arrow-right" /></button>
+        <p class="caption">{H('Step 2 is optional and short.', 'चरण 2 वैकल्पिक और छोटा है।')}</p>
+      </div>
+    </fieldset>
+
+    <fieldset class="enquiry__step" data-step="2" hidden>
+      <legend class="visually-hidden">{H('More details (optional)', 'अधिक विवरण (वैकल्पिक)')}</legend>
+      <div class="enquiry__grid">
+        <div class="field" data-show-for="dealer distributor builder business government" hidden>
+          <label class="field__label" for={`${id}-org`}>{H('Organisation name', 'संस्था का नाम')} <span class="field__opt">{H('(optional)', '(वैकल्पिक)')}</span></label>
+          <input class="input" id={`${id}-org`} name="organisation" autocomplete="organization" maxlength="120" />
+        </div>
+        <div class="field" data-show-for="dealer distributor builder business government" hidden>
+          <label class="field__label" for={`${id}-gstin`}>GSTIN <span class="field__opt">{H('(optional)', '(वैकल्पिक)')}</span></label>
+          <input class="input mono" id={`${id}-gstin`} name="gstin" maxlength="15" autocapitalize="characters" spellcheck="false" />
+          <p class="field__error"><Icon name="alert" /><span></span></p>
+        </div>
+        <div class="field" data-show-for="government" hidden>
+          <label class="field__label" for={`${id}-tender`}>{H('Tender or reference number', 'टेंडर या संदर्भ संख्या')} <span class="field__opt">{H('(optional)', '(वैकल्पिक)')}</span></label>
+          <input class="input mono" id={`${id}-tender`} name="tenderRef" maxlength="80" />
+        </div>
+        <div class="field" data-intent-only="solar" hidden>
+          <label class="field__label" for={`${id}-bill`}>{H('Monthly bill or units', 'मासिक बिल या यूनिट')} <span class="field__opt">{H('(optional)', '(वैकल्पिक)')}</span></label>
+          <input class="input" id={`${id}-bill`} name="x_bill" maxlength="40" placeholder={H('e.g. ₹3,000 or 400 units', 'जैसे ₹3,000 या 400 यूनिट')} />
+        </div>
+        <div class="field" data-intent-only="solar" hidden>
+          <label class="field__label" for={`${id}-roof`}>{H('Roof type', 'छत का प्रकार')} <span class="field__opt">{H('(optional)', '(वैकल्पिक)')}</span></label>
+          <select class="select" id={`${id}-roof`} name="x_roof">
+            <option value="">{H('Not sure', 'पता नहीं')}</option>
+            <option>{H('Flat concrete (RCC)', 'समतल पक्की छत (RCC)')}</option>
+            <option>{H('Metal sheet', 'मेटल शीट')}</option>
+            <option>{H('Open land / ground', 'खुली ज़मीन')}</option>
+          </select>
+        </div>
+        <div class="field" data-intent-only="dealer" hidden>
+          <label class="field__label" for={`${id}-brands`}>{H('Brands you sell today', 'आप अभी कौन से ब्रांड बेचते हैं')} <span class="field__opt">{H('(optional)', '(वैकल्पिक)')}</span></label>
+          <input class="input" id={`${id}-brands`} name="x_brands" maxlength="120" />
+        </div>
+        <div class="field">
+          <label class="field__label" for={`${id}-email`}>{H('Email', 'ईमेल')} <span class="field__opt">{H('(optional)', '(वैकल्पिक)')}</span></label>
+          <input class="input" id={`${id}-email`} name="email" type="email" autocomplete="email" maxlength="120" />
+          <p class="field__error"><Icon name="alert" /><span></span></p>
+        </div>
+      </div>
+      <fieldset class="field">
+        <legend class="field__label">{H('How should we reply?', 'हम आपको कैसे जवाब दें?')}</legend>
+        <div class="choice-group">
+          <label class="choice"><input type="radio" name="replyVia" value="call" checked /><span>{H('Call', 'कॉल')}</span></label>
+          <label class="choice"><input type="radio" name="replyVia" value="whatsapp" /><span>WhatsApp</span></label>
+          <label class="choice"><input type="radio" name="replyVia" value="email" /><span>{H('Email', 'ईमेल')}</span></label>
+        </div>
+      </fieldset>
+      <div class="field">
+        <label class="field__label" for={`${id}-msg`}>{H('Message', 'संदेश')} <span class="field__opt">{H('(optional)', '(वैकल्पिक)')}</span></label>
+        <textarea class="textarea" id={`${id}-msg`} name="message" rows="4" maxlength="2000" placeholder={H('Anything that helps us reply well, sizes, quantities, site details.', 'कुछ भी जो हमें सही जवाब देने में मदद करे, साइज़, मात्रा, साइट का विवरण।')}></textarea>
+      </div>
+      <label class="checkbox">
+        <input type="checkbox" name="marketing" />
+        <span>{H('Send me new product updates on WhatsApp. (Optional. You can stop anytime.)', 'मुझे WhatsApp पर नए उत्पादों की जानकारी भेजें। (वैकल्पिक, आप कभी भी बंद कर सकते हैं।)')}</span>
+      </label>
+      <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off" /></label></div>
+      <p class="caption" data-sample="Consent wording, lawyer review (I3)">
+        {H('We use these details only to reply to this enquiry.', 'हम इन विवरणों का उपयोग केवल इस पूछताछ का जवाब देने के लिए करते हैं।')} <a href={u('/privacy/')}>{H('Privacy notice', 'गोपनीयता सूचना')}</a>.
+      </p>
+      <div class="enquiry__actions">
+        <button class="btn btn--quiet" type="button" data-back><Icon name="arrow-left" />{H('Back', 'वापस')}</button>
+        <button class="btn" type="submit" data-submit>{H('Send request', 'अनुरोध भेजें')}<Icon name="arrow-right" /></button>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="enquiry__result" data-result hidden tabindex="-1"></div>
+</form>
+
+<script>
+  import { initEnquiryForms } from '../scripts/enquiry-form';
+  initEnquiryForms();
+</script>

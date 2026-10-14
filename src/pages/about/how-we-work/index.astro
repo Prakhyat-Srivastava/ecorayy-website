@@ -1,0 +1,44 @@
+---
+import { u } from '../../../lib/url';
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
+import SectionHead from '../../../components/ui/SectionHead.astro';
+import PhotoPending from '../../../components/ui/PhotoPending.astro';
+import Steps from '../../../components/ui/Steps.astro';
+const photos = [
+  ['Our office and store in Etawah', 'Where customers and dealers can visit.'],
+  ['The installation team', 'The people who come to your site.'],
+  ['Equipment', 'Tools, testing instruments and vehicles.'],
+  ['A rooftop survey', 'Measuring, checking shade and the electrical connection.'],
+  ['A street light being erected', 'Pole, bracket, luminaire and connection.'],
+  ['Handover', 'Testing, documents and a walkthrough.'],
+];
+const principles = [
+  { icon: 'file', title: 'Everything in writing', text: 'Proposals, prices and scope are written down before work starts.' },
+  { icon: 'shield-check', title: 'Safety first', text: 'Correct cable sizes, protection devices and earthing on every job.' },
+  { icon: 'check-circle', title: 'Tested before handover', text: 'Every installation is tested and explained to you before we leave.' },
+  { icon: 'phone', title: 'Reachable afterwards', text: 'A named person to call when you need help.' },
+];
+---
+<Base title="How we work" description="Ecorayy’s team, equipment and process, shown as it is, with real photographs." ogImage="sol01">
+  <section class="page-hero">
+    <div class="container page-hero__copy" style="max-width:900px">
+      <Breadcrumbs items={[{ label: 'Home', href: u('/') }, { label: 'About', href: u('/about/') }, { label: 'How we work' }]} />
+      <span class="label">How we work</span>
+      <h1 class="h1">Shown as it is.</h1>
+      <p class="lead">Real photographs of our people, equipment and work belong on this page, not stock images. They are being taken now; until then, each frame says what it will show.</p>
+    </div>
+  </section>
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container photo-grid">
+      {photos.map(([t, d]) => <figure><PhotoPending title={t} text="Real photograph coming soon" /><figcaption><strong>{t}</strong>{d}</figcaption></figure>)}
+    </div>
+  </section>
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label="Principles" title="How every job is done." />
+      <div data-sample="Process description, confirm (A7)"><Steps horizontal steps={principles} /></div>
+    </div>
+  </section>
+</Base>

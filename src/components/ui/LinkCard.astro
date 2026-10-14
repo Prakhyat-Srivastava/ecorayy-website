@@ -1,0 +1,18 @@
+---
+import Img from '../Img.astro';
+import Icon from '../Icon.astro';
+import type { ImageId } from '../../data/images';
+import type { Lang } from '../../data/site';
+interface Props { href: string; title: string; text?: string; image?: ImageId; icon?: string; meta?: string; go?: string; ratio?: '4x3' | '1x1' | '3x2'; lang?: Lang; sizes?: string; delay?: number }
+const { href, title, text, image, icon, meta, go, ratio = '4x3', lang = 'en', sizes = '(min-width: 1000px) 30vw, (min-width: 600px) 45vw, 100vw', delay } = Astro.props;
+---
+<article class="card card--link reveal" data-delay={delay}>
+  {image && <div class:list={['frame frame--flush', `frame--${ratio}`]}><Img id={image} lang={lang} sizes={sizes} /></div>}
+  <div class="card__body">
+    {icon && !image && <span class="icon-circle icon-circle--lg"><Icon name={icon} /></span>}
+    {meta && <span class="card__meta">{meta}</span>}
+    <h3 class="card__title"><a class="card__link" href={href}>{title}</a></h3>
+    {text && <p class="card__text">{text}</p>}
+    <span class="card__go" aria-hidden="true">{go ?? (lang === 'hi' ? 'और जानें' : 'Learn more')}<Icon name="arrow-right" /></span>
+  </div>
+</article>

@@ -1,0 +1,126 @@
+---
+import Icon from './Icon.astro';
+import { ESTIMATOR as E } from '../data/estimator';
+import { href } from '../data/i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang?: Lang }
+const { lang = 'en' } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+---
+<div class="estimator" data-estimator data-lang={lang} data-cfg={JSON.stringify(E)} data-survey={href('/quote/', lang)}>
+  <form class="estimator__inputs" data-est-form>
+    <div class="field">
+      <label class="field__label" for="est-bill">{H('Monthly electricity bill', 'मासिक बिजली बिल')}</label>
+      <div class="estimate-card__value"><span class="mono" data-est-bill-out>₹2,500</span><span class="caption">{H('per month', 'प्रति माह')}</span></div>
+      <input class="range" id="est-bill" name="bill" type="range" min="500" max="20000" step="250" value="2500" />
+      <div class="estimate-card__scale caption"><span>₹500</span><span>₹20,000+</span></div>
+    </div>
+    <div class="field">
+      <label class="field__label" for="est-state">{H('State', 'राज्य')}</label>
+      <select class="select" id="est-state" name="state">{E.states.map((s) => <option value={s.id}>{hi ? s.hi : s.en}</option>)}</select>
+    </div>
+    <fieldset class="field">
+      <legend class="field__label">{H('Type of building', 'इमारत का प्रकार')}</legend>
+      <div class="choice-group">
+        {E.buildings.map((b, i) => <label class="choice"><input type="radio" name="building" value={b.id} checked={i === 0} /><span>{hi ? b.hi : b.en}</span></label>)}
+      </div>
+    </fieldset>
+    <div class="field">
+      <label class="field__label" for="est-roof">{H('Free roof area', 'छत पर खाली जगह')} <span class="field__opt">{H('(optional)', '(वैकल्पिक)')}</span></label>
+      <div class="input-group">
+        <input class="input" id="est-roof" name="roof" type="number" inputmode="numeric" min="0" step="50" placeholder={H('Not sure', 'पता नहीं')} style="border-radius:var(--r-input) 0 0 var(--r-input);border-right:0" />
+        <span class="input-group__prefix" style="border-radius:0 var(--r-input) var(--r-input) 0;border-left:0;border-right:1.5px solid var(--slate-500)">{H('sq ft', 'वर्ग फ़ुट')}</span>
+      </div>
+      <p class="field__hint">{H('Leave empty if you’re not sure. We measure it at the survey.', 'अगर पता नहीं है तो खाली छोड़ दें, सर्वे में हम नाप लेंगे।')}</p>
+    </div>
+  </form>
+
+  <div class="estimator__result" aria-live="polite">
+    <div class="estimator__badge"><span class="tag tag--warn" data-sample="Sample assumptions (D4)"><Icon name="alert" />{H('Sample assumptions, estimate only', 'नमूना मान्यताएँ, केवल अनुमान')}</span></div>
+    <div class="est-grid">
+      <div class="est-figure est-figure--main"><span class="est-figure__k">{H('Suggested system size', 'सुझाया गया सिस्टम साइज़')}</span><span class="est-figure__v" data-out="size">-</span></div>
+      <div class="est-figure"><span class="est-figure__k">{H('Approximate cost', 'अनुमानित लागत')}</span><span class="est-figure__v" data-out="cost">-</span></div>
+      <div class="est-figure"><span class="est-figure__k">{H('Estimated saving', 'अनुमानित बचत')}</span><span class="est-figure__v" data-out="saving">-</span></div>
+      <div class="est-figure"><span class="est-figure__k">{H('Rough payback', 'लागत वसूली (लगभग)')}</span><span class="est-figure__v" data-out="payback">-</span></div>
+    </div>
+    <p class="small muted" data-out="note"></p>
+    <details class="spec-group est-how">
+      <summary>{H('How we calculated this', 'हमने यह कैसे गिना')}<Icon name="chevron-down" /></summary>
+      <div style="padding:0 20px 18px">
+        <table class="spec-table"><tbody data-out="how"></tbody></table>
+        <p class="caption" style="margin-top:10px">{H('Figures exclude fixed charges, taxes and any government subsidy. A site survey confirms the real numbers.', 'इन आँकड़ों में फ़िक्स्ड चार्ज, टैक्स और कोई सरकारी सब्सिडी शामिल नहीं है। साइट सर्वे से असली आँकड़े तय होते हैं।')}</p>
+      </div>
+    </details>
+    <a class="btn btn--block" href={href('/quote/?intent=solar', lang)} data-survey-link>{H('Book a free site survey', 'मुफ़्त साइट सर्वे बुक करें')}<Icon name="arrow-right" /></a>
+    <p class="caption" style="text-align:center">{H('Estimate pending a site survey. We’ll prefill the form with what you entered.', 'यह साइट सर्वे से पहले का अनुमान है। आपने जो भरा है, वह फ़ॉर्म में पहले से भरा मिलेगा।')}</p>
+  </div>
+</div>
+
+<script>
+  type Cfg = { states: { id: string; en: string; hi: string; tariff: number; gen: number }[]; buildings: { id: string; en: string; hi: string; costMin: number; costMax: number }[]; sqftPerKw: number; minKw: number; stepKw: number };
+  document.querySelectorAll<HTMLElement>('[data-estimator]').forEach((root) => {
+    const cfg: Cfg = JSON.parse(root.dataset.cfg!);
+    const hi = root.dataset.lang === 'hi';
+    const f = root.querySelector<HTMLFormElement>('[data-est-form]')!;
+    const out = (k: string) => root.querySelector<HTMLElement>(`[data-out="${k}"]`)!;
+    const inr = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
+    const lakh = (n: number) => (n >= 100000 ? `₹${(n / 100000).toFixed(n >= 1000000 ? 1 : 2).replace(/\.?0+$/, '')} ${hi ? 'लाख' : 'lakh'}` : `₹${inr.format(n)}`);
+    const params = new URL(location.href).searchParams;
+    const bill = f.elements.namedItem('bill') as HTMLInputElement;
+    if (params.get('bill')) bill.value = String(Math.min(20000, Math.max(500, Number(params.get('bill')) || 2500)));
+
+    function calc() {
+      const b = Number(bill.value);
+      const st = cfg.states.find((s) => s.id === (f.elements.namedItem('state') as HTMLSelectElement).value)!;
+      const bd = cfg.buildings.find((x) => x.id === (f.querySelector<HTMLInputElement>('input[name=building]:checked')?.value ?? 'home'))!;
+      const roof = Number((f.elements.namedItem('roof') as HTMLInputElement).value) || 0;
+      const units = b / st.tariff;
+      let kw = Math.max(cfg.minKw, Math.ceil((units / (st.gen * 30)) / cfg.stepKw) * cfg.stepKw);
+      let limited = false;
+      if (roof > 0) {
+        const maxKw = Math.floor((roof / cfg.sqftPerKw) / cfg.stepKw) * cfg.stepKw;
+        if (maxKw >= cfg.minKw && maxKw < kw) { kw = maxKw; limited = true; }
+        if (maxKw < cfg.minKw) limited = true;
+      }
+      const genMonth = kw * st.gen * 30;
+      const saving = Math.min(genMonth, units) * st.tariff;
+      const costMin = kw * bd.costMin;
+      const costMax = kw * bd.costMax;
+      const pbMin = costMin / (saving * 12);
+      const pbMax = costMax / (saving * 12);
+
+      const o = root.querySelector<HTMLElement>('[data-est-bill-out]')!;
+      o.textContent = `₹${inr.format(b)}${b >= 20000 ? '+' : ''}`;
+      bill.style.setProperty('--fill', `${((b - 500) / 19500) * 100}%`);
+      out('size').innerHTML = `${kw.toLocaleString('en-IN')} <small>kW</small>`;
+      out('cost').textContent = `${lakh(costMin)} – ${lakh(costMax)}`;
+      out('saving').innerHTML = `₹${inr.format(saving)}<small>/${hi ? 'माह' : 'month'}</small>`;
+      out('payback').innerHTML = `${pbMin.toFixed(1)}–${pbMax.toFixed(1)} <small>${hi ? 'वर्ष' : 'years'}</small>`;
+      out('note').textContent = limited
+        ? (hi ? 'आपकी छत की जगह के हिसाब से साइज़ सीमित किया गया है। सर्वे में हम विकल्प देखेंगे।' : 'Size limited by the roof area you entered. We’ll look at options at the survey.')
+        : (hi ? `लगभग ${inr.format(Math.round(genMonth))} यूनिट प्रति माह बनने का अनुमान।` : `Expected to generate about ${inr.format(Math.round(genMonth))} units a month.`);
+      const rows: [string, string][] = [
+        [hi ? 'बिजली दर (औसत)' : 'Electricity tariff (average)', `₹${st.tariff}/${hi ? 'यूनिट' : 'unit'}`],
+        [hi ? 'मासिक खपत (बिल ÷ दर)' : 'Monthly use (bill ÷ tariff)', `${inr.format(Math.round(units))} ${hi ? 'यूनिट' : 'units'}`],
+        [hi ? 'उत्पादन प्रति kW प्रति दिन' : 'Generation per kW per day', `${st.gen} ${hi ? 'यूनिट' : 'units'} (${hi ? st.hi : st.en})`],
+        [hi ? 'लागत प्रति kW' : 'Cost per kW', `₹${inr.format(bd.costMin)} – ₹${inr.format(bd.costMax)}`],
+        [hi ? 'छत की जगह प्रति kW' : 'Roof area per kW', `≈ ${cfg.sqftPerKw} ${hi ? 'वर्ग फ़ुट' : 'sq ft'}`],
+      ];
+      out('how').innerHTML = rows.map(([k, v]) => `<tr><th scope="row">${k}</th><td>${v}</td></tr>`).join('');
+      const link = root.querySelector<HTMLAnchorElement>('[data-survey-link]')!;
+      const summary = hi
+        ? `अनुमान: ${kw} kW (${hi ? st.hi : st.en}, ${bd.hi}), बिल ₹${inr.format(b)}/माह${roof ? `, छत ${roof} वर्ग फ़ुट` : ''}.`
+        : `Estimate: ${kw} kW for a ${bd.en.toLowerCase()} in ${st.en}, bill ₹${inr.format(b)}/month${roof ? `, roof ${roof} sq ft` : ''}.`;
+      const u = new URL(root.dataset.survey!, location.origin);
+      u.searchParams.set('intent', 'solar');
+      u.searchParams.set('bill', String(b));
+      u.searchParams.set('estimate', summary);
+      link.href = u.pathname + u.search;
+    }
+    f.addEventListener('input', calc);
+    f.addEventListener('change', calc);
+    calc();
+  });
+</script>

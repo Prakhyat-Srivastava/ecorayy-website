@@ -1,0 +1,150 @@
+---
+import { u } from '../lib/url';
+import { getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import LangSwitch from './LangSwitch.astro';
+import logo from '../assets/brand/ecorayy-logo-lockup.png';
+import { nav, sectionOf } from '../data/nav';
+import { href, tr, ui } from '../data/i18n';
+import { contact, type Lang } from '../data/site';
+
+interface Props { lang: Lang; path: string }
+const { lang, path } = Astro.props;
+const t = ui[lang];
+const hi = lang === 'hi';
+const current = sectionOf(path);
+const logoImg = await getImage({ src: logo, height: 80, format: 'png' });
+const isHome = path === '/' || path === '/hi/';
+---
+<!-- Mobile bottom action bar: Solar · Products · Quote List · Contact -->
+<nav class="bottom-bar" aria-label={hi ? 'त्वरित कार्य' : 'Quick actions'}>
+  <ul class="bottom-bar__list" role="list">
+    <li><a class="bottom-bar__btn" href={href('/solar/', lang)} aria-current={current === 'solar' ? 'page' : undefined}><Icon name="sun" />{hi ? 'सोलर' : 'Solar'}</a></li>
+    <li><a class="bottom-bar__btn" href={u('/products/')} aria-current={current === 'products' ? 'page' : undefined}><Icon name="box" />{hi ? 'उत्पाद' : 'Products'}</a></li>
+    <li><button class="bottom-bar__btn" type="button" data-open-quote><Icon name="list" /><span class="badge" data-quote-count>0</span>{t.quoteList}</button></li>
+    <li><button class="bottom-bar__btn" type="button" data-open-contact><Icon name="phone" />{hi ? 'संपर्क' : 'Contact'}</button></li>
+  </ul>
+</nav>
+
+<!-- Mobile navigation -->
+<dialog class="mnav" data-mnav aria-label={t.menu}>
+  <div class="mnav__head">
+    <a href={href('/', lang)}><img src={logoImg.src} alt="Ecorayy" height="40" width={Math.round(40 * logo.width / logo.height)} /></a>
+    <button class="icon-btn" type="button" data-close aria-label={t.close}><Icon name="close" /></button>
+  </div>
+  <div class="mnav__viewport">
+    <div class="mnav__panel is-active" data-level="0" data-panel="root">
+      {nav.map((n) => n.mega ? (
+        <button class="mnav__row" type="button" data-goto={n.key}>{tr(n.label, lang)}<Icon name="chevron-right" /></button>
+      ) : (
+        <a class="mnav__row" href={href(n.href, lang)} aria-current={current === n.key ? 'page' : undefined}>{tr(n.label, lang)}<Icon name="arrow-right" /></a>
+      ))}
+      <div class="mnav__extras">
+        <button class="btn btn--secondary btn--block" type="button" data-open-quote><Icon name="list" />{t.quoteList} <span class="badge" data-quote-count>0</span></button>
+        <a class="btn btn--quiet btn--block" href={u('/downloads/')}><Icon name="download" />{t.downloads}</a>
+        <div class="cluster" style="justify-content:space-between;margin-top:8px">
+          <span class="caption">{hi ? 'भाषा' : 'Language'}</span>
+          <LangSwitch lang={lang} path={path} />
+        </div>
+        <p class="caption" data-sample="Phone and hours (B3, B5)">{contact.phoneDisplay} · {tr(contact.hours, lang)}</p>
+      </div>
+    </div>
+    {nav.filter((n) => n.mega).map((n) => (
+      <div class="mnav__panel" data-level="1" data-panel={n.key} aria-hidden="true">
+        <button class="mnav__back" type="button" data-back><Icon name="arrow-left" />{t.back}</button>
+        <a class="mnav__row" href={href(n.href, lang)}>{tr(n.mega!.overview, lang)}<Icon name="arrow-right" /></a>
+        {n.mega!.items.map((it) => (
+          <a class="mnav__row mnav__row--sub" href={href(it.href, lang)}>
+            <span class="icon-circle"><Icon name={it.icon} /></span>{tr(it.label, lang)}
+          </a>
+        ))}
+        <a class="link-arrow" style="margin-top:18px" href={href(n.mega!.foot.href, lang)}><Icon name={n.mega!.foot.icon} />{tr(n.mega!.foot.label, lang)}</a>
+      </div>
+    ))}
+  </div>
+</dialog>
+
+<!-- Quote List side panel (frontend-only; saved on this device for 30 days) -->
+<dialog class="drawer" data-quote-drawer aria-labelledby="ql-title">
+  <div class="drawer__head">
+    <div>
+      <h2 id="ql-title" class="h4">{t.quoteList} <span class="badge" data-quote-count>0</span></h2>
+      <p class="caption">{hi ? 'इस डिवाइस पर 30 दिनों तक सहेजी जाती है।' : 'Saved on this device for 30 days.'}</p>
+    </div>
+    <button class="icon-btn" type="button" data-close aria-label={t.close}><Icon name="close" /></button>
+  </div>
+  <div class="drawer__body">
+    <div class="ql-empty" data-quote-empty>
+      <svg viewBox="0 0 220 120" width="220" height="120" aria-hidden="true" style="margin:28px auto 12px;color:var(--blue)">
+        <path d="M10 60h60" stroke="var(--line)" stroke-width="2" stroke-linecap="round" />
+        <circle cx="10" cy="60" r="4" fill="#fff" stroke="currentColor" stroke-width="2" />
+        <rect x="80" y="22" width="60" height="76" rx="10" fill="#fff" stroke="currentColor" stroke-width="2" />
+        <path d="M94 46h32M94 60h32M94 74h18" stroke="var(--line)" stroke-width="2" stroke-linecap="round" />
+        <path d="M150 60h60" stroke="var(--line)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 6" />
+        <circle cx="210" cy="60" r="4" fill="#fff" stroke="var(--line)" stroke-width="2" />
+      </svg>
+      <p style="text-align:center;font-weight:650">{hi ? 'आपकी कोटेशन सूची खाली है।' : 'Your Quote List is empty.'}</p>
+      <p class="muted small" style="text-align:center;max-width:32ch;margin:6px auto 20px">
+        {hi ? 'उत्पाद देखते समय जोड़ें, या हमें बताएँ कि आपको क्या चाहिए।' : 'Add products while you browse, or tell us what you need.'}
+      </p>
+      <div class="grid" style="--gap:10px">
+        <a class="btn btn--secondary" href={u('/products/')}>{hi ? 'उत्पाद देखें' : 'Browse products'}<Icon name="arrow-right" /></a>
+        <a class="btn btn--quiet" href={href('/contact/', lang)}>{t.sendEnquiry}</a>
+      </div>
+    </div>
+    <ul class="ql-items" role="list" data-quote-items></ul>
+    <div class="field ql-note" data-quote-note-wrap hidden>
+      <label class="field__label" for="ql-note">{hi ? 'कुछ और?' : 'Anything else?'} <span class="field__opt">{hi ? '(वैकल्पिक)' : '(optional)'}</span></label>
+      <textarea class="textarea" id="ql-note" data-quote-note rows="3" placeholder={hi ? 'जैसे: 2.5 sq mm के 20 कॉइल, पीले रंग में' : 'e.g. 20 coils of 2.5 sq mm in yellow'}></textarea>
+    </div>
+  </div>
+  <div class="drawer__foot" data-quote-foot hidden>
+    <a class="btn btn--block" href={href('/quote/', lang)}>{hi ? 'कोटेशन का अनुरोध करें' : 'Request a quote'}<Icon name="arrow-right" /></a>
+    <div class="cluster" style="--gap:8px;justify-content:space-between">
+      <button class="btn btn--quiet btn--sm" type="button" data-share-list><Icon name="share" />{hi ? 'सूची साझा करें' : 'Share list'}</button>
+      <a class="btn btn--quiet btn--sm" href={u('/quote/list/?print=1')}><Icon name="download" />PDF</a>
+      <button class="btn btn--quiet btn--sm" type="button" data-clear-list aria-label={hi ? 'सूची साफ़ करें' : 'Clear list'}><Icon name="trash" /></button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Search -->
+<dialog class="search-dlg" data-search aria-label={t.search}>
+  <div class="search-panel">
+    <form class="search-bar" role="search" action={u('/search/')} method="get" data-search-form>
+      <Icon name="search" />
+      <label class="visually-hidden" for="site-search">{t.search}</label>
+      <input id="site-search" name="q" type="search" autocomplete="off" placeholder={t.searchPlaceholder} data-search-input enterkeyhint="search" />
+      <button class="icon-btn" type="button" data-close aria-label={t.close}><Icon name="close" /></button>
+    </form>
+    <div class="search-results" data-search-results aria-live="polite">
+      <div class="search-empty">
+        <p class="small">{hi ? 'कोशिश करें:' : 'Try:'}</p>
+        <div class="cluster" style="justify-content:center;--gap:8px">
+          {['2.5 sq mm', '32A MCB', '9W B22', 'solar street light', 'taar'].map((q) => <button class="chip" type="button" data-search-suggest={q}>{q}</button>)}
+        </div>
+      </div>
+    </div>
+    <div class="search-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> {hi ? 'चुनें' : 'to move'}</span><span><kbd>Enter</kbd> {hi ? 'खोलें' : 'to open'}</span><span><kbd>Esc</kbd> {t.close.toLowerCase()}</span></div>
+  </div>
+</dialog>
+
+<!-- Contact sheet (mobile) -->
+<dialog class="sheet" data-contact-sheet aria-labelledby="cs-title">
+  <div class="sheet__grip"></div>
+  <h2 id="cs-title" class="h3" style="margin-bottom:6px">{hi ? 'हमसे बात करें' : 'Talk to us'}</h2>
+  <p class="muted small" data-sample="Hours (B5)" style="margin-bottom:18px">{tr(contact.hours, lang)}</p>
+  <div class="grid" style="--gap:10px">
+    <button class="btn btn--block" type="button" disabled data-sample="Phone (B3)"><Icon name="phone" />{t.call} · {t.notConnected}</button>
+    <button class="btn btn--secondary btn--block" type="button" disabled data-sample="WhatsApp (B4)"><Icon name="chat" />{t.whatsapp} · {t.notConnected}</button>
+    <a class="btn btn--quiet btn--block" href={href('/contact/', lang)}><Icon name="mail" />{t.sendEnquiry}</a>
+  </div>
+  <button class="btn btn--quiet btn--block btn--sm" type="button" data-close style="margin-top:14px;border:0">{t.close}</button>
+</dialog>
+
+<div class="toast-region" data-toasts aria-live="polite" aria-atomic="true"></div>
+<p class="visually-hidden" aria-live="polite" data-announcer></p>
+
+<script is:inline define:vars={{ quoteLabels: { added: t.added, viewList: t.viewList, home: isHome } }}>
+  window.__ecorayyUI = quoteLabels;
+</script>

@@ -1,0 +1,101 @@
+---
+import { u } from '../lib/url';
+import { getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import LangSwitch from './LangSwitch.astro';
+import logo from '../assets/brand/ecorayy-logo-lockup.png';
+import { nav, sectionOf } from '../data/nav';
+import { images } from '../data/images';
+import { href, tr, ui } from '../data/i18n';
+import { contact, type Lang } from '../data/site';
+
+interface Props { lang: Lang; path: string }
+const { lang, path } = Astro.props;
+const t = ui[lang];
+const current = sectionOf(path);
+
+const logoImg = await getImage({ src: logo, height: 100, format: 'png' });
+// Mega-menu preview images are loaded only when a panel first opens.
+const previews = new Map<string, string>();
+for (const n of nav) for (const it of n.mega?.items ?? []) {
+  if (!previews.has(it.image)) previews.set(it.image, (await getImage({ src: images[it.image].src, width: 760, format: 'webp', quality: 72 })).src);
+}
+---
+<div class="utility">
+  <div class="container utility__inner">
+    <div class="utility__group">
+      <span class="utility__item" data-sample="Phone number (B3)"><Icon name="phone" />{contact.phoneDisplay}</span>
+      <span class="utility__item" data-sample="WhatsApp number (B4)" title={t.notConnected}><Icon name="chat" />{t.whatsapp} · {t.notConnected}</span>
+      <span class="utility__item" data-sample="Office hours (B5)"><Icon name="clock" />{tr(contact.hours, lang)}</span>
+    </div>
+    <div class="utility__group">
+      <a class="utility__item" href={u('/downloads/')}><Icon name="download" />{t.downloads}</a>
+      <LangSwitch lang={lang} path={path} />
+    </div>
+  </div>
+</div>
+
+<header class="header" data-header>
+  <div class="container header__inner">
+    <a class="header__logo" href={href('/', lang)} aria-label={lang === 'hi' ? 'Ecorayy होम' : 'Ecorayy home'}>
+      <img src={logoImg.src} width={Math.round(100 * logo.width / logo.height)} height="100" alt="Ecorayy" />
+    </a>
+
+    <nav class="nav" aria-label={lang === 'hi' ? 'मुख्य' : 'Main'}>
+      <ul class="nav__list">
+        {nav.map((n) => n.mega ? (
+          <li class="nav__item" data-mega>
+            <button class:list={['nav__link', { 'is-current': current === n.key }]} type="button" aria-expanded="false" aria-controls={`mega-${n.key}`}>
+              {tr(n.label, lang)}<Icon name="chevron-down" />
+            </button>
+            <div class="mega" id={`mega-${n.key}`} data-mega-panel>
+              <div class="container mega__inner">
+                <ul class="mega__list" role="list">
+                  {n.mega.items.map((it, i) => (
+                    <li>
+                      <a class:list={['mega__link', { 'is-active': i === 0 }]} href={href(it.href, lang)} data-preview={i} data-desc={tr(it.desc, lang)}>
+                        <span class="icon-circle"><Icon name={it.icon} /></span>
+                        <span><strong>{tr(it.label, lang)}</strong><span>{tr(it.desc, lang)}</span></span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <div class="mega__preview" aria-hidden="true">
+                  <div class="frame">
+                    {n.mega.items.map((it, i) => (
+                      <span class:list={['mega__img', { 'is-shown': i === 0 }]} data-preview-img={i}>
+                        <img data-src={previews.get(it.image)} alt="" width="760" height="570" />
+                      </span>
+                    ))}
+                  </div>
+                  <p class="mega__preview-text" data-preview-text>{tr(n.mega.items[0].desc, lang)}</p>
+                </div>
+                <div class="mega__foot">
+                  <a class="link-arrow" href={href(n.href, lang)}>{tr(n.mega.overview, lang)}<Icon name="arrow-right" /></a>
+                  <a class="link-arrow" href={href(n.mega.foot.href, lang)}><Icon name={n.mega.foot.icon} />{tr(n.mega.foot.label, lang)}</a>
+                </div>
+              </div>
+            </div>
+          </li>
+        ) : (
+          <li class="nav__item">
+            <a class:list={['nav__link', { 'is-current': current === n.key }]} href={href(n.href, lang)} aria-current={current === n.key ? 'page' : undefined}>{tr(n.label, lang)}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <span class="header__lang-mobile"><LangSwitch lang={lang} path={path} compact /></span>
+      <button class="icon-btn" type="button" data-open-search aria-label={t.search} aria-keyshortcuts="/">
+        <Icon name="search" />
+      </button>
+      <button class="quote-btn" type="button" data-open-quote aria-label={`${t.quoteList}`}>
+        <Icon name="list" />{t.quoteList}<span class="badge" data-quote-count aria-live="off">0</span>
+      </button>
+      <button class="icon-btn header__menu" type="button" data-open-menu aria-label={t.menu} aria-haspopup="dialog">
+        <Icon name="menu" />
+      </button>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,23 @@
+---
+import Icon from '../Icon.astro';
+interface Step { title: string; text: string; who?: string; you?: string; icon?: string }
+interface Props { steps: Step[]; horizontal?: boolean; compact?: boolean; whoLabel?: string; youLabel?: string }
+const { steps, horizontal = false, compact = false, whoLabel = 'Who', youLabel = 'You' } = Astro.props;
+---
+<ol class:list={['steps', { 'steps--h': horizontal, 'steps--compact': compact }]} style={`--n:${steps.length}`} role="list">
+  {steps.map((s, i) => (
+    <li class="step">
+      <span class="step__node">{s.icon ? <Icon name={s.icon} /> : String(i + 1).padStart(2, '0')}</span>
+      <div class="step__body">
+        <h3 class="h4">{s.title}</h3>
+        {s.text && <p class="muted">{s.text}</p>}
+        {(s.who || s.you) && (
+          <div class="step__meta">
+            {s.who && <span class="tag tag--blue">{whoLabel}: {s.who}</span>}
+            {s.you && <span class="tag">{youLabel}: {s.you}</span>}
+          </div>
+        )}
+      </div>
+    </li>
+  ))}
+</ol>

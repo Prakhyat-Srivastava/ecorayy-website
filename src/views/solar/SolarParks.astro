@@ -1,0 +1,68 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import Steps from '../../components/ui/Steps.astro';
+import DirectorsMini from '../../components/DirectorsMini.astro';
+import CtaBand from '../../components/ui/CtaBand.astro';
+import { href } from '../../data/i18n';
+import type { Lang } from '../../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+const stages = [
+  { icon: 'ruler', title: H('Design', 'डिज़ाइन'), text: H('Site assessment, yield study, layout and single-line diagrams.', 'साइट आकलन, उत्पादन अध्ययन, लेआउट और सिंगल-लाइन डायग्राम।') },
+  { icon: 'calculator', title: H('Engineering', 'इंजीनियरिंग'), text: H('Structural, electrical and civil engineering for the chosen layout.', 'चुने गए लेआउट के लिए संरचनात्मक, विद्युत और सिविल इंजीनियरिंग।') },
+  { icon: 'box', title: H('Procurement', 'खरीद'), text: H('Modules, inverters, structures, cables and switchgear, sourced to specification.', 'विनिर्देश के अनुसार मॉड्यूल, इन्वर्टर, ढाँचे, केबल और स्विचगियर।') },
+  { icon: 'tool', title: H('Installation', 'इंस्टॉलेशन'), text: H('Civil works, mounting, module installation, cabling and termination.', 'सिविल कार्य, माउंटिंग, मॉड्यूल इंस्टॉलेशन, केबलिंग और टर्मिनेशन।') },
+  { icon: 'check-circle', title: H('Testing & commissioning', 'परीक्षण और कमीशनिंग'), text: H('Pre-commissioning tests, grid synchronisation and handover documents.', 'कमीशनिंग से पहले परीक्षण, ग्रिड सिंक्रोनाइज़ेशन और हैंडओवर दस्तावेज़।') },
+  { icon: 'wrench', title: H('Operation & maintenance', 'संचालन और रखरखाव'), text: H('Monitoring, cleaning, preventive maintenance and fault response.', 'निगरानी, सफ़ाई, निवारक रखरखाव और ख़राबी पर कार्रवाई।') },
+];
+---
+<Base lang={lang} title={H('Solar parks & EPC', 'सोलर पार्क और EPC')} description={H('Ground-mounted solar EPC, design, engineering, procurement, installation, commissioning and O&M, for developers and public bodies.', 'डेवलपर्स और सार्वजनिक संस्थाओं के लिए ग्राउंड-माउंट सोलर EPC।')} ogImage="sol04">
+  <PageHero
+    lang={lang}
+    crumbs={[{ label: H('Home', 'होम'), href: href('/', lang) }, { label: H('Solar', 'सोलर'), href: href('/solar/', lang) }, { label: H('Parks & EPC', 'पार्क और EPC') }]}
+    label={H('Solar parks & EPC', 'सोलर पार्क और EPC')}
+    title={H('Engineering, procurement and construction for solar at scale.', 'बड़े पैमाने के सोलर के लिए इंजीनियरिंग, खरीद और निर्माण।')}
+    lead={H('For developers, institutions and public bodies. Here is what we take on at each stage, and the people accountable for it.', 'डेवलपर्स, संस्थानों और सार्वजनिक निकायों के लिए। हर चरण में हम क्या करते हैं, और इसके लिए कौन जवाबदेह है।')}
+    image="sol04"
+  >
+    <a class="btn" href={href('/quote/?intent=government', lang)} style="justify-self:start">{H('Discuss a project', 'प्रोजेक्ट पर बात करें')}<Icon name="arrow-right" /></a>
+  </PageHero>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label={H('Scope', 'कार्यक्षेत्र')} title={H('What we do at each EPC stage', 'हर EPC चरण में हम क्या करते हैं')} text={H('A new company should say what it is equipped to do, and nothing more. Capacity figures and completed projects will be added as they happen.', 'एक नई कंपनी को वही कहना चाहिए जो वह कर सकती है, बस उतना ही। क्षमता और पूरे हुए प्रोजेक्ट जैसे-जैसे होंगे, जोड़े जाएँगे।')} />
+      <Steps steps={stages} horizontal />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <div class="stack reveal" style="--stack:18px">
+        <span class="label">{H('Accountability', 'जवाबदेही')}</span>
+        <h2 class="h2">{H('Named people, verifiable registrations.', 'नामित लोग, जाँचे जा सकने वाले पंजीकरण।')}</h2>
+        <p class="lead">{H('Ecorayy is a DPIIT-recognised startup and a Udyam-registered micro enterprise. Our Directors are accountable for every project we take on.', 'Ecorayy एक DPIIT मान्यता प्राप्त स्टार्टअप और उद्यम-पंजीकृत सूक्ष्म उद्यम है। हम जो भी प्रोजेक्ट लेते हैं, उसके लिए हमारे निदेशक जवाबदेह हैं।')}</p>
+        <div class="cluster">
+          <a class="link-arrow" href={u('/infrastructure/government-tenders/')}>{H('Government & tenders', 'सरकारी और टेंडर')}<Icon name="arrow-right" /></a>
+          <a class="link-arrow" href={u('/about/registrations/')}>{H('Registrations', 'पंजीकरण')}<Icon name="arrow-right" /></a>
+        </div>
+      </div>
+      <div class="card card--pad reveal" data-delay="1">
+        <DirectorsMini lang={lang} size={80} />
+        <p class="caption" style="margin-top:18px" data-sample="Project team details (D6)">{H('Project team and relevant experience will be listed here.', 'प्रोजेक्ट टीम और उनका अनुभव यहाँ दिया जाएगा।')}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <CtaBand lang={lang} title={H('Planning a solar park or large installation?', 'सोलर पार्क या बड़ी स्थापना की योजना बना रहे हैं?')} text={H('Share the site location, capacity and timeline. We’ll respond with how we can help, and what we’d need from you.', 'साइट, क्षमता और समय-सीमा बताएँ। हम बताएँगे कि हम कैसे मदद कर सकते हैं, और हमें आपसे क्या चाहिए।')} primary={{ label: H('Discuss a project', 'प्रोजेक्ट पर बात करें'), href: href('/quote/?intent=government', lang) }} secondary={{ label: H('Company profile (PDF)', 'कंपनी प्रोफ़ाइल (PDF)'), href: u('/downloads/#company') }} />
+    </div>
+  </section>
+</Base>

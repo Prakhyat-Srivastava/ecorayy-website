@@ -1,0 +1,35 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import { nav, footerCols } from '../../data/nav';
+import { allFamilies, categories, categoryUrl, familyUrl } from '../../data/products';
+import { HINDI_PAGES, href } from '../../data/i18n';
+---
+<Base title="Sitemap" description="Every page on the Ecorayy website.">
+  <section class="section section--tight">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'Home', href: u('/') }, { label: 'Sitemap' }]} />
+      <h1 class="h1" style="margin:16px 0 40px">Sitemap</h1>
+      <div class="footer__cols" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:40px">
+        {footerCols.map((c) => (
+          <div class="footer__col"><h2>{c.title.en}</h2><ul>{c.links.map((l) => <li><a href={href(l.href, 'en')}>{l.label.en}</a></li>)}</ul></div>
+        ))}
+        {categories.map((c) => (
+          <div class="footer__col">
+            <h2><a href={categoryUrl(c.slug)} style="color:inherit">{c.name}</a></h2>
+            <ul>
+              {c.subs?.map((s) => <li><a href={categoryUrl(c.slug, s.slug)}>{s.name}</a></li>)}
+              {allFamilies.filter((f) => f.category === c.slug).map((f) => <li><a href={familyUrl(f)}>{f.name}</a></li>)}
+            </ul>
+          </div>
+        ))}
+        <div class="footer__col"><h2>Hindi · हिन्दी</h2><ul>{[...HINDI_PAGES].map((p) => <li><a href={p === '/' ? u('/hi/') : u(`/hi${p}`)} lang="hi">/hi{p}</a></li>)}</ul></div>
+        <div class="footer__col"><h2>Legal & other</h2><ul>
+          <li><a href={u('/quote/')}>Request a quote</a></li><li><a href={u('/quote/list/')}>Quote List</a></li><li><a href={u('/search/')}>Search</a></li>
+          <li><a href={u('/privacy/')}>Privacy notice</a></li><li><a href={u('/terms/')}>Terms of use</a></li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+</Base>

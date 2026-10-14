@@ -1,0 +1,236 @@
+---
+import { u } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import Img from '../components/Img.astro';
+import Icon from '../components/Icon.astro';
+import SunToSwitch from '../components/SunToSwitch.astro';
+import HeroStage from '../components/HeroStage.astro';
+import Registrations from '../components/Registrations.astro';
+import DirectorsMini from '../components/DirectorsMini.astro';
+import Certificate from '../components/Certificate.astro';
+import SectionHead from '../components/ui/SectionHead.astro';
+import { categories, familiesIn, categoryUrl } from '../data/products';
+import { href, tr } from '../data/i18n';
+import { company, contact, type Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+
+const pillars = [
+  { title: H('Solar', 'सोलर'), text: H('Rooftop, business and ground-mount solar, pumps and storage.', 'रूफ़टॉप, व्यावसायिक और ग्राउंड-माउंट सोलर, पंप और स्टोरेज।'), href: href('/solar/', lang), img: 'sol01' as const },
+  { title: H('Infrastructure', 'इन्फ्रास्ट्रक्चर'), text: H('Street, highway and public lighting for public bodies and developers.', 'सार्वजनिक संस्थाओं और डेवलपर्स के लिए स्ट्रीट, हाईवे और सार्वजनिक लाइटिंग।'), href: u('/infrastructure/'), img: 'inf01' as const },
+  { title: H('Products', 'उत्पाद'), text: H('Lighting, switches, wires, switchgear and solar equipment.', 'लाइटिंग, स्विच, तार, स्विचगियर और सोलर उपकरण।'), href: u('/products/'), img: 'prd00' as const },
+];
+
+const audiences = [
+  { icon: 'home', title: H('I want solar for my home', 'मुझे अपने घर के लिए सोलर चाहिए'), text: H('See what it could save you, and how it works.', 'देखें कितनी बचत हो सकती है, और काम कैसे होता है।'), href: href('/solar/homes/', lang) },
+  { icon: 'factory', title: H('I run a business or institution', 'मेरा व्यवसाय या संस्थान है'), text: H('Rooftop and ground-mount solar, with storage.', 'रूफ़टॉप और ग्राउंड-माउंट सोलर, स्टोरेज सहित।'), href: href('/solar/business/', lang) },
+  { icon: 'landmark', title: H('I’m from a government department or municipality', 'मैं सरकारी विभाग या नगर निकाय से हूँ'), text: H('Registrations, eligibility and our profile.', 'पंजीकरण, पात्रता और हमारी प्रोफ़ाइल।'), href: u('/infrastructure/government-tenders/') },
+  { icon: 'handshake', title: H('I’m a dealer, electrician or contractor', 'मैं डीलर, इलेक्ट्रीशियन या ठेकेदार हूँ'), text: H('Partner with us, or get project supply.', 'हमारे साथ जुड़ें, या प्रोजेक्ट सप्लाई लें।'), href: u('/partners/') },
+  { icon: 'box', title: H('I’m looking for products', 'मुझे उत्पाद चाहिए'), text: H('Lighting, switches, wires, switchgear, solar.', 'लाइटिंग, स्विच, तार, स्विचगियर, सोलर।'), href: u('/products/') },
+];
+const cats = categories.map((c) => ({ ...c, count: familiesIn(c.slug).length }));
+---
+<Base
+  lang={lang}
+  title={hi ? 'Ecorayy | सोलर, स्ट्रीट लाइटिंग और बिजली का सामान' : 'Ecorayy | Solar, street lighting and electrical supply'}
+  description={hi
+    ? 'Ecorayy Power Tech: घरों और व्यवसायों के लिए सोलर, सड़कों और सार्वजनिक स्थानों के लिए लाइटिंग, और बिजली का सामान। इटावा, उत्तर प्रदेश।'
+    : 'Ecorayy Power Tech installs solar for homes and businesses, lights roads and public spaces, and supplies the electricals in between. Etawah, Uttar Pradesh.'}
+>
+  <!-- 1. Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__grid">
+        <div class="hero__copy">
+          <span class="label">{H('Solar · Infrastructure · Products', 'सोलर · इन्फ्रास्ट्रक्चर · उत्पाद')}</span>
+          <h1 class="display">
+            {hi
+              ? <>सोलर, स्ट्रीट लाइटिंग और बिजली का सामान, <span class="accent">एक ही भरोसेमंद कंपनी से।</span></>
+              : <>We install solar, light up roads, and supply <span class="accent">the electricals in between.</span></>}
+          </h1>
+          <p class="lead measure">
+            {H('Get a solar estimate, download our company profile, or ask for a quote in under a minute.',
+               'सोलर बचत का अनुमान देखें, हमारी कंपनी प्रोफ़ाइल डाउनलोड करें, या एक मिनट से कम में कोटेशन माँगें।')}
+          </p>
+          <div class="hero__actions">
+            <a class="btn" href={href('/solar/homes/', lang)}><Icon name="home" />{H('Solar for my home', 'मेरे घर के लिए सोलर')}</a>
+            <a class="btn btn--secondary" href={u('/infrastructure/government-tenders/')}>{H('Projects & tenders', 'प्रोजेक्ट और टेंडर')}<Icon name="arrow-right" /></a>
+          </div>
+          <p class="hero__note"><Icon name="shield-check" size={18} />{H(`DPIIT-recognised startup · Incorporated ${company.incorporated.en} · Etawah, UP`, `DPIIT मान्यता प्राप्त स्टार्टअप · निगमन ${company.incorporated.hi} · इटावा, उ.प्र.`)}</p>
+        </div>
+        <div class="hero__media">
+          <HeroStage lang={lang} />
+        </div>
+      </div>
+
+      <nav class="pillars" aria-label={H('Our three areas of work', 'हमारे काम के तीन क्षेत्र')}>
+        {pillars.map((p, i) => (
+          <a class="pillar" href={p.href}>
+            <span class="frame"><Img id={p.img} lang={lang} sizes="88px" widths={[120, 200]} /></span>
+            <span><span class="pillar__title">{p.title}</span><span class="pillar__text">{p.text}</span></span>
+            <span class="pillar__arrow"><Icon name="arrow-right" /></span>
+          </a>
+        ))}
+      </nav>
+    </div>
+  </section>
+
+  <!-- 2. Who are you? -->
+  <section class="section section--paper section--tight">
+    <div class="container">
+      <SectionHead label={H('Start here', 'यहाँ से शुरू करें')} title={H('What brings you here?', 'आप किस लिए आए हैं?')} />
+      <div class="audience">
+        {audiences.map((a, i) => (
+          <a class="audience__card reveal" data-delay={i} href={a.href}>
+            <span class="icon-circle"><Icon name={a.icon} /></span>
+            <strong>{a.title}</strong>
+            <span>{a.text}</span>
+            <span class="card__go" aria-hidden="true"><span>{H('Go', 'आगे')}</span><Icon name="arrow-right" /></span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Sun to Switch, Sun to Street -->
+  <SunToSwitch lang={lang} />
+
+  <!-- 4. Solar -->
+  <section class="section">
+    <div class="container">
+      <div class="split split--wide-text">
+        <div class="stack reveal" style="--stack:20px">
+          <span class="label">{H('Solar', 'सोलर')}</span>
+          <h2 class="h2">{H('See what solar could save you.', 'देखें, सोलर से कितनी बचत हो सकती है।')}</h2>
+          <p class="lead">{H('Rooftop solar for homes and businesses, designed around your roof and your bill, and explained in plain words.', 'घरों और व्यवसायों के लिए रूफ़टॉप सोलर, आपकी छत और आपके बिल के हिसाब से, आसान भाषा में।')}</p>
+          <form class="estimate-card" action={href('/solar/estimator/', lang)} method="get" data-mini-estimator>
+            <label class="field__label" for="mini-bill">{H('What’s your monthly electricity bill?', 'आपका मासिक बिजली बिल कितना है?')}</label>
+            <div class="estimate-card__value"><span class="mono" data-bill-out>₹2,500</span><span class="caption">{H('per month', 'प्रति माह')}</span></div>
+            <input class="range" id="mini-bill" name="bill" type="range" min="500" max="20000" step="250" value="2500" data-bill />
+            <div class="estimate-card__scale caption"><span>₹500</span><span>₹20,000+</span></div>
+            <button class="btn" type="submit">{H('See my estimate', 'मेरा अनुमान देखें')}<Icon name="arrow-right" /></button>
+            <p class="caption">{H('No sign-up. Every assumption is shown.', 'कोई साइन-अप नहीं। हर अनुमान का आधार दिखाया जाता है।')}</p>
+          </form>
+        </div>
+        <div class="reveal" data-delay="1">
+          <div class="frame frame--4x5 light-pool"><Img id="sol02" lang={lang} sizes="(min-width: 900px) 40vw, 100vw" /></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Infrastructure -->
+  <section class="section section--paper">
+    <div class="container">
+      <div class="split split--reverse">
+        <div class="stack reveal" style="--stack:20px">
+          <span class="label">{H('Infrastructure', 'इन्फ्रास्ट्रक्चर')}</span>
+          <h2 class="h2">{H('Lighting for roads, towns and public spaces.', 'सड़कों, कस्बों और सार्वजनिक स्थानों के लिए लाइटिंग।')}</h2>
+          <p class="lead">{H('Street, highway and public lighting, solar pumps and rural electrification, for nagar palikas, panchayats, public sector bodies and private developers.', 'स्ट्रीट, हाईवे और सार्वजनिक लाइटिंग, सोलर पंप और ग्रामीण विद्युतीकरण, नगर पालिकाओं, पंचायतों, सार्वजनिक संस्थाओं और निजी डेवलपर्स के लिए।')}</p>
+          <ul class="ticks" role="list">
+            <li><Icon name="check" />{H('Survey, supply, installation and maintenance', 'सर्वे, सप्लाई, इंस्टॉलेशन और रखरखाव')}</li>
+            <li><Icon name="check" />{H('LED, solar and smart street lighting', 'LED, सोलर और स्मार्ट स्ट्रीट लाइटिंग')}</li>
+            <li><Icon name="check" />{H('Registrations and documents ready for tenders', 'टेंडर के लिए पंजीकरण और दस्तावेज़ तैयार')}</li>
+          </ul>
+          <div class="cluster">
+            <a class="btn" href={u('/infrastructure/government-tenders/')}><Icon name="landmark" />{H('Government & tenders', 'सरकारी और टेंडर')}</a>
+            <a class="btn btn--secondary" href={u('/downloads/#company')}><Icon name="download" />{H('Company profile (PDF)', 'कंपनी प्रोफ़ाइल (PDF)')}</a>
+          </div>
+        </div>
+        <div class="reveal" data-delay="1">
+          <div class="frame frame--4x5 frame--night light-pool"><Img id="inf02" lang={lang} sizes="(min-width: 900px) 45vw, 100vw" /></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Registrations, not slogans -->
+  <section class="section">
+    <div class="container">
+      <div class="trust">
+        <div>
+          <SectionHead
+            label={H('Verifiable, not just trustworthy', 'जाँच सकने योग्य')}
+            title={H('Check us. Don’t just trust us.', 'हम पर भरोसा करने से पहले, हमें जाँचिए।')}
+            text={H('Ecorayy was incorporated in 2026. Instead of slogans, here are our registrations, each one checkable on an official government portal.', 'Ecorayy का निगमन 2026 में हुआ। नारों की जगह, ये हैं हमारे पंजीकरण, हर एक को सरकारी पोर्टल पर जाँचा जा सकता है।')}
+          />
+          <Registrations lang={lang} prefix="home" />
+          <div class="reveal" style="margin-top:12px"><Certificate lang={lang} id="home" /></div>
+        </div>
+        <aside class="trust__people reveal" data-delay="2" aria-labelledby="people-t">
+          <span class="label">{H('The people accountable', 'जवाबदेह लोग')}</span>
+          <h3 id="people-t" class="h3">{H('Led by named Directors', 'नामित निदेशकों के नेतृत्व में')}</h3>
+          <DirectorsMini lang={lang} size={84} />
+          <div class="stack" style="--stack:4px">
+            <a class="link-arrow" href={u('/about/team/')}>{H('Meet the Directors', 'निदेशकों से मिलें')}<Icon name="arrow-right" /></a>
+            <a class="link-arrow" href={u('/about/how-we-work/')}>{H('How we work', 'हम कैसे काम करते हैं')}<Icon name="arrow-right" /></a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Products -->
+  <section class="section section--paper">
+    <div class="container">
+      <div class="section-head-row">
+        <SectionHead label={H('Products', 'उत्पाद')} title={H('Products for every project.', 'हर प्रोजेक्ट के लिए उत्पाद।')} text={H('Browse by category, filter by the values you know, and build one Quote List for the whole job.', 'श्रेणी से देखें, अपनी ज़रूरत के हिसाब से फ़िल्टर करें, और पूरे काम के लिए एक कोटेशन सूची बनाएँ।')} />
+        <a class="link-arrow reveal" href={u('/downloads/#products')}><Icon name="download" />{H('Full product catalogue · PDF', 'पूरा उत्पाद कैटलॉग · PDF')}</a>
+      </div>
+      <div class="cat-tiles cat-tiles--5">
+        {cats.map((c, i) => (
+          <article class="card card--link cat-tile reveal" data-delay={i % 3}>
+            <div class="frame"><Img id={c.image} lang={lang} sizes={i === 0 ? '(min-width: 1000px) 38vw, 100vw' : '(min-width: 1000px) 28vw, (min-width: 600px) 45vw, 100vw'} /></div>
+            <div class="card__body">
+              <span class="cat-tile__count">{c.count} {H(c.count === 1 ? 'product' : 'products', 'उत्पाद')}</span>
+              <h3 class="card__title"><a class="card__link" href={categoryUrl(c.slug)}>{c.name}</a></h3>
+              <p class="card__text">{c.short}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Talk to us -->
+  <section class="section">
+    <div class="container">
+      <div class="talk">
+        <div class="stack reveal" style="--stack:18px">
+          <span class="label">{H('Talk to us', 'हमसे बात करें')}</span>
+          <h2 class="h2">{H('Talk to a person, not a form.', 'फ़ॉर्म से नहीं, एक इंसान से बात करें।')}</h2>
+          <p class="lead">{H('Call, WhatsApp or visit. Or send one short enquiry and we’ll come back to you.', 'कॉल करें, WhatsApp करें या आइए। या एक छोटी-सी पूछताछ भेजें, हम आपसे संपर्क करेंगे।')}</p>
+          <div class="cluster">
+            <a class="btn" href={href('/quote/', lang)}>{H('Get a quote', 'कोटेशन लें')}<Icon name="arrow-right" /></a>
+            <a class="btn btn--secondary" href={href('/contact/', lang)}>{H('All contact options', 'सभी संपर्क विकल्प')}</a>
+          </div>
+        </div>
+        <ul class="contact-list talk__list reveal" data-delay="1" role="list">
+          <li class="contact-item" data-sample="Phone (B3)"><span class="icon-circle"><Icon name="phone" /></span><span><strong>{contact.phoneDisplay}</strong><span>{H('Phone · number coming soon', 'फ़ोन · नंबर जल्द')}</span></span></li>
+          <li class="contact-item" data-sample="WhatsApp (B4)"><span class="icon-circle"><Icon name="chat" /></span><span><strong>WhatsApp</strong><span>{H('Business number coming soon', 'बिज़नेस नंबर जल्द')}</span></span></li>
+          <li class="contact-item"><span class="icon-circle"><Icon name="map-pin" /></span><span><strong>{H('Etawah, Uttar Pradesh', 'इटावा, उत्तर प्रदेश')}</strong><span>{company.registeredOffice.oneLine}</span></span></li>
+          <li class="contact-item" data-sample="Hours (B5)"><span class="icon-circle"><Icon name="clock" /></span><span><strong>{tr(contact.hours, lang)}</strong><span>{tr(contact.responsePromise, lang)}</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const f = document.querySelector<HTMLFormElement>('[data-mini-estimator]');
+  if (f) {
+    const r = f.querySelector<HTMLInputElement>('[data-bill]')!;
+    const o = f.querySelector<HTMLElement>('[data-bill-out]')!;
+    const fmt = new Intl.NumberFormat('en-IN');
+    const sync = () => {
+      const v = Number(r.value);
+      o.textContent = `₹${fmt.format(v)}${v >= 20000 ? '+' : ''}`;
+      r.style.setProperty('--fill', `${((v - Number(r.min)) / (Number(r.max) - Number(r.min))) * 100}%`);
+    };
+    r.addEventListener('input', sync);
+    sync();
+  }
+</script>

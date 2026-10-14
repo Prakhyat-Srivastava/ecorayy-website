@@ -1,0 +1,79 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Img from '../../components/Img.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import Faq from '../../components/ui/Faq.astro';
+import EnquiryForm from '../../components/EnquiryForm.astro';
+import { href } from '../../data/i18n';
+import type { Lang } from '../../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+const who = [
+  { icon: 'factory', t: H('Factories & workshops', 'फ़ैक्ट्री और वर्कशॉप'), d: H('Daytime loads that match solar generation.', 'दिन के समय का लोड, जो सोलर उत्पादन से मेल खाता है।') },
+  { icon: 'box', t: H('Cold storages & warehouses', 'कोल्ड स्टोरेज और गोदाम'), d: H('Large roofs and steady demand.', 'बड़ी छतें और लगातार माँग।') },
+  { icon: 'building', t: H('Schools, colleges & hospitals', 'स्कूल, कॉलेज और अस्पताल'), d: H('Lower running costs, with backup where it matters.', 'कम चलाने का खर्च, और जहाँ ज़रूरी हो वहाँ बैकअप।') },
+  { icon: 'store', t: H('Offices, shops & hotels', 'ऑफ़िस, दुकानें और होटल'), d: H('Predictable bills and visible commitment to clean power.', 'अनुमानित बिल और स्वच्छ ऊर्जा की स्पष्ट प्रतिबद्धता।') },
+];
+const faqs = [
+  { q: H('Rooftop or ground-mount?', 'छत पर या ज़मीन पर?'), a: H('Rooftop uses space you already have. Ground-mount suits sites with open land and loads larger than the roof can supply. The survey compares both.', 'रूफ़टॉप मौजूदा जगह का उपयोग करता है। जहाँ खुली ज़मीन हो और लोड छत की क्षमता से ज़्यादा हो, वहाँ ग्राउंड-माउंट सही रहता है। सर्वे में दोनों की तुलना होती है।') },
+  { q: H('Can a metal-sheet roof take panels?', 'क्या मेटल शीट की छत पर पैनल लग सकते हैं?'), a: H('Usually yes, using rails fixed to the sheet profile. We check the roof’s condition and structure first.', 'आमतौर पर हाँ, शीट पर लगी रेल के ज़रिए। पहले हम छत की हालत और ढाँचा जाँचते हैं।') },
+  { q: H('Do we need a battery?', 'क्या बैटरी चाहिए?'), a: H('Only if outages cost you money, for example cold chains, labs or critical equipment. Otherwise an on-grid system is simpler and cheaper.', 'केवल तब, जब बिजली कटौती से नुकसान हो, जैसे कोल्ड चेन, लैब या ज़रूरी उपकरण। वरना ऑन-ग्रिड सिस्टम आसान और सस्ता है।') },
+];
+---
+<Base lang={lang} title={H('Solar for businesses & institutions', 'व्यवसायों और संस्थानों के लिए सोलर')} description={H('Rooftop and ground-mount solar with battery storage for factories, cold storages, schools, hospitals and offices.', 'फ़ैक्ट्री, कोल्ड स्टोरेज, स्कूल, अस्पताल और ऑफ़िस के लिए सोलर।')} ogImage="sol03">
+  <PageHero
+    lang={lang}
+    crumbs={[{ label: H('Home', 'होम'), href: href('/', lang) }, { label: H('Solar', 'सोलर'), href: href('/solar/', lang) }, { label: H('Businesses & institutions', 'व्यवसाय और संस्थान') }]}
+    label={H('Commercial & institutional', 'व्यावसायिक और संस्थागत')}
+    title={H('Solar that works as hard as your business.', 'सोलर, जो आपके व्यवसाय जितनी मेहनत करे।')}
+    lead={H('Rooftop and ground-mount systems for daytime loads, with battery storage where outages cost money.', 'दिन के लोड के लिए रूफ़टॉप और ग्राउंड-माउंट सिस्टम, और जहाँ कटौती से नुकसान हो वहाँ बैटरी स्टोरेज।')}
+    image="sol03"
+  >
+    <a class="btn" href="#enquire" style="justify-self:start">{H('Discuss your site', 'अपनी साइट पर बात करें')}<Icon name="arrow-right" /></a>
+  </PageHero>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label={H('Who it’s for', 'किसके लिए')} title={H('Built for daytime demand.', 'दिन की माँग के लिए बना।')} />
+      <div class="tile-icons" style="--n:4">
+        {who.map((c, i) => <div class="tile-icon reveal" data-delay={i}><span class="icon-circle icon-circle--lg"><Icon name={c.icon} /></span><h3>{c.t}</h3><p>{c.d}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <div class="stack reveal" style="--stack:18px">
+        <span class="label">{H('Battery storage', 'बैटरी स्टोरेज')}</span>
+        <h2 class="h2">{H('Keep essentials running when the grid doesn’t.', 'ग्रिड बंद हो, तब भी ज़रूरी चीज़ें चलती रहें।')}</h2>
+        <p class="lead">{H('A hybrid system stores solar energy in lithium batteries and switches over automatically during outages, useful for cold chains, labs, servers and hospitals.', 'हाइब्रिड सिस्टम सोलर ऊर्जा को लिथियम बैटरी में सहेजता है और कटौती के समय अपने-आप चालू हो जाता है, कोल्ड चेन, लैब, सर्वर और अस्पतालों के लिए उपयोगी।')}</p>
+        <ul class="ticks" role="list">
+          <li><Icon name="check" />{H('Sized to the loads that matter, not the whole building', 'पूरी इमारत नहीं, केवल ज़रूरी लोड के हिसाब से साइज़')}</li>
+          <li><Icon name="check" />{H('Long-life lithium iron phosphate (LiFePO4) chemistry', 'लंबी उम्र वाली लिथियम आयरन फ़ॉस्फ़ेट (LiFePO4) बैटरी')}</li>
+        </ul>
+        <a class="link-arrow" href={u('/products/solar-equipment/')}>{H('See solar equipment', 'सोलर उपकरण देखें')}<Icon name="arrow-right" /></a>
+      </div>
+      <div class="reveal" data-delay="1"><div class="frame frame--1x1 frame--night"><Img id="sts02" lang={lang} sizes="(min-width: 900px) 45vw, 100vw" /></div></div>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container container--narrow">
+      <SectionHead label={H('Questions', 'प्रश्न')} title={H('Common questions', 'आम सवाल')} />
+      <Faq items={faqs} sample="Sample FAQs, engineer review" />
+    </div>
+  </section>
+
+  <section class="section" id="enquire">
+    <div class="container container--narrow">
+      <SectionHead label={H('Enquire', 'पूछताछ')} title={H('Tell us about your site', 'अपनी साइट के बारे में बताएँ')} text={H('Connected load, monthly units and roof type help us reply with something useful, but all of that is optional.', 'कनेक्टेड लोड, मासिक यूनिट और छत का प्रकार हमें उपयोगी जवाब देने में मदद करते हैं, लेकिन ये सब वैकल्पिक हैं।')} />
+      <EnquiryForm lang={lang} intent="solar" id="business-form" />
+    </div>
+  </section>
+</Base>

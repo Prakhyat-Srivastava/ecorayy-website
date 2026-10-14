@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import Estimator from '../../components/Estimator.astro';
+import { href } from '../../data/i18n';
+import type { Lang } from '../../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+---
+<Base lang={lang} title={H('Solar savings estimator', 'सोलर बचत अनुमान')} description={H('Estimate your solar system size, cost, monthly savings and payback in a minute, with every assumption shown.', 'एक मिनट में सोलर सिस्टम का साइज़, लागत, बचत और लागत-वसूली का अनुमान।')} ogImage="sol02">
+  <section class="page-hero" style="padding-bottom:clamp(24px,3vw,40px)">
+    <div class="container page-hero__copy">
+      <Breadcrumbs items={[{ label: H('Home', 'होम'), href: href('/', lang) }, { label: H('Solar', 'सोलर'), href: href('/solar/', lang) }, { label: H('Estimator', 'अनुमान') }]} />
+      <span class="label">{H('Savings estimator', 'बचत अनुमान')}</span>
+      <h1 class="h1">{H('What could solar save you?', 'सोलर से आपकी कितनी बचत हो सकती है?')}</h1>
+      <p class="lead">{H('Four inputs, instant results, and every assumption shown. It’s an estimate. The site survey confirms the real numbers.', 'चार जानकारियाँ, तुरंत नतीजा, और हर आधार साफ़-साफ़। यह अनुमान है, असली आँकड़े साइट सर्वे से तय होते हैं।')}</p>
+    </div>
+  </section>
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container"><Estimator lang={lang} /></div>
+  </section>
+</Base>

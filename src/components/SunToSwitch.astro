@@ -1,0 +1,170 @@
+---
+import { u } from '../lib/url';
+/**
+ * Signature band: "Sun to switch. Sun to street."
+ * Desktop: a symmetric Y-shaped circuit (trunk → fork → Home lane above,
+ * Street lane below) pinned while a pulse of light travels along it, with a
+ * step panel that tells the story of the stop currently lit.
+ * Mobile: a vertical circuit that lights up as you scroll.
+ * Reduced motion / no JS: everything is shown lit, nothing is hidden.
+ */
+import Img from './Img.astro';
+import Icon from './Icon.astro';
+import { href } from '../data/i18n';
+import type { ImageId } from '../data/images';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+
+type Node = { id: string; img: ImageId; lit?: ImageId; name: string; text: string; long: string; cta: string; href: string; tall?: boolean; branch?: string };
+const nodes: Node[] = [
+  { id: 'n1', img: 'sts01', name: H('Solar panel', 'सोलर पैनल'), text: H('Turns sunlight into electricity.', 'धूप को बिजली में बदलता है।'),
+    long: H('Monocrystalline panels on your roof or land turn sunlight into DC electricity, quietly, every day the sun is up.', 'आपकी छत या ज़मीन पर लगे पैनल धूप को DC बिजली में बदलते हैं, हर उस दिन जब सूरज निकलता है।'),
+    cta: H('Explore solar', 'सोलर देखें'), href: u('/solar/') },
+  { id: 'n2', img: 'sts02', name: H('Inverter & battery', 'इन्वर्टर और बैटरी'), text: H('Converts it, and stores it for later.', 'बिजली बदलता है और बाद के लिए सहेजता है।'),
+    long: H('The inverter converts solar DC into the AC your home and the grid use. A battery stores the surplus for evenings and power cuts.', 'इन्वर्टर सोलर DC को घर और ग्रिड में इस्तेमाल होने वाली AC बिजली में बदलता है। बैटरी बची हुई बिजली शाम और कटौती के लिए सहेजती है।'),
+    cta: H('Solar equipment', 'सोलर उपकरण'), href: u('/products/solar-equipment/') },
+  { id: 'n3', img: 'sts03', name: H('Switchgear', 'स्विचगियर'), text: H('Protects every circuit.', 'हर सर्किट की सुरक्षा।'),
+    long: H('MCBs, RCCBs and distribution boards protect wiring from overloads and people from electric shock, one circuit at a time.', 'MCB, RCCB और डिस्ट्रीब्यूशन बोर्ड वायरिंग को ओवरलोड से और लोगों को करंट से बचाते हैं, हर सर्किट पर।'),
+    cta: H('Switchgear & panels', 'स्विचगियर और पैनल'), href: u('/products/switchgear-panels/') },
+  { id: 'n4', img: 'sts04', name: H('Cable', 'केबल'), text: H('Carries power safely.', 'बिजली सुरक्षित पहुँचाती है।'),
+    long: H('Flexible copper wires carry power through the walls of your home, and cables carry it along the roads of your town.', 'तांबे के लचीले तार आपके घर की दीवारों में, और केबल आपके शहर की सड़कों के साथ बिजली पहुँचाते हैं।'),
+    cta: H('Wires & cables', 'तार और केबल'), href: u('/products/wires-cables/') },
+  { id: 'n5', img: 'sts05', name: H('Switch', 'स्विच'), text: H('Power at your fingertips.', 'बिजली आपकी उँगलियों पर।'),
+    long: H('At home, the line ends at your fingertips: modular switches and sockets that are quiet, safe and made for Indian plugs.', 'घर में यह लाइन आपकी उँगलियों तक पहुँचती है: शांत, सुरक्षित और भारतीय प्लग के लिए बने मॉड्यूलर स्विच और सॉकेट।'),
+    cta: H('Switches & sockets', 'स्विच और सॉकेट'), href: u('/products/switches-sockets/'), branch: H('Home', 'घर') },
+  { id: 'n6', img: 'sts06a', lit: 'sts06b', name: H('Light', 'रोशनी'), text: H('Lights the room.', 'कमरा रोशन।'),
+    long: H('And the room lights up. Efficient LED bulbs and battens, in the light colour that suits each space.', 'और कमरा रोशन हो जाता है। हर जगह के हिसाब से सही रंग की रोशनी वाले LED बल्ब और बैटन।'),
+    cta: H('LED lighting', 'LED लाइटिंग'), href: u('/products/lighting/led-bulbs/') },
+  { id: 'n7', img: 'sts07a', lit: 'sts07b', name: H('Street light', 'स्ट्रीट लाइट'), text: H('Lights the road.', 'सड़क रोशन।'),
+    long: H('Outside, the same line lights the road: LED, solar and smart street lighting for colonies, highways and villages.', 'बाहर, वही लाइन सड़क रोशन करती है: कॉलोनियों, हाईवे और गाँवों के लिए LED, सोलर और स्मार्ट स्ट्रीट लाइटिंग।'),
+    cta: H('Street lighting', 'स्ट्रीट लाइटिंग'), href: u('/infrastructure/street-highway-lighting/'), tall: true, branch: H('Street', 'सड़क') },
+];
+const sunStep = {
+  name: H('Sunlight', 'धूप'),
+  long: H('Every system starts here: free, clean energy that arrives every morning. Scroll to follow it all the way to a home and a street.', 'हर सिस्टम यहीं से शुरू होता है: मुफ़्त, साफ़ ऊर्जा जो हर सुबह आती है। स्क्रॉल करें और इसे घर और सड़क तक जाते देखें।'),
+  cta: H('Estimate your savings', 'अपनी बचत देखें'), href: u('/solar/estimator/'),
+};
+const steps = [{ id: 'sun', ...sunStep }, ...nodes];
+const orbSizes = '(min-width: 1080px) 108px, 112px';
+const rays = Array.from({ length: 16 }, (_, i) => i);
+---
+<section class="sts" data-sts aria-labelledby="sts-title">
+  <div class="container sts__inner">
+    <div class="sts__head reveal">
+      <span class="label">{H('How power reaches you', 'बिजली आप तक कैसे पहुँचती है')}</span>
+      <h2 id="sts-title" class="h2">{H('Sun to switch. Sun to street.', 'सूरज से स्विच तक। सूरज से सड़क तक।')}</h2>
+      <p>{H('One line of power, from a solar panel to the light in your room and the light on your road. Scroll to follow it, or select any stop.', 'बिजली की एक लाइन, सोलर पैनल से आपके कमरे और आपकी सड़क की रोशनी तक। स्क्रॉल करके इसे देखें, या किसी भी पड़ाव को चुनें।')}</p>
+    </div>
+
+    <!-- Desktop: pinned Y-circuit + story panel -->
+    <div class="sts__pin" data-sts-pin>
+      <div class="sts__sticky">
+        <div class="sts__board">
+          <div class="sts__stage" data-sts-stage>
+            <div class="sts__lines" data-sts-lines aria-hidden="true"></div>
+            <div class="sts__layout">
+              <span class="sts__sun-cell">
+                <span class="sts__node sts__node--sun is-lit" data-sts-node="sun" data-step="0">
+                  <span class="sts__sun" data-sun>
+                    <svg class="sun__rays" viewBox="0 0 100 100" aria-hidden="true">{rays.map((i) => <line x1="50" y1={i % 2 ? 7 : 3} x2="50" y2="13" transform={`rotate(${i * 22.5} 50 50)`} />)}</svg>
+                    <span class="sun__core"></span>
+                  </span>
+                  <span class="sts__name">{sunStep.name}</span>
+                </span>
+              </span>
+              {nodes.map((n, i) => (
+                <a class:list={['sts__node', `sts__${n.id}`]} href={href(n.href, lang)} data-sts-node={n.id} data-step={i + 1}>
+                  {n.branch && <span class="sts__branch-label">{n.branch}</span>}
+                  <span class:list={['sts__orb', { 'sts__orb--tall': n.tall }]}>
+                    <Img id={n.img} lang={lang} sizes={orbSizes} widths={[160, 240, 360]} tag={false} alt="" />
+                    {n.lit && <span class="sts__lit"><Img id={n.lit} lang={lang} sizes={orbSizes} widths={[160, 240, 360]} tag={false} alt="" /></span>}
+                    <span class="sts__num mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  </span>
+                  <span class="sts__name">{n.name}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div class="sts__story" data-sts-story aria-live="polite">
+            <div class="sts__story-count">
+              <span class="mono"><span data-story-num>00</span><span class="sts__story-of"> / 07</span></span>
+              <span class="sts__bars" aria-hidden="true">{nodes.map(() => <i></i>)}</span>
+            </div>
+            <div class="sts__story-copy">
+              <h3 class="sts__story-title" data-story-title>{sunStep.name}</h3>
+              <p data-story-text>{sunStep.long}</p>
+            </div>
+            <a class="btn btn--on-night btn--sm sts__story-cta" href={href(sunStep.href, lang)} data-story-link><span data-story-cta>{sunStep.cta}</span><Icon name="arrow-right" /></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile / tablet: vertical circuit -->
+    <div class="sts__v" data-sts-v>
+      <div class="sts__lines" data-sts-lines-v aria-hidden="true"></div>
+      <div class="sts__v-trunk">
+        <span class="sts__node sts__node--row sts__node--sun is-lit" data-sts-vnode="sun">
+          <span class="sts__v-sun"><span class="sts__sun">
+            <svg class="sun__rays" viewBox="0 0 100 100" aria-hidden="true">{rays.map((i) => <line x1="50" y1={i % 2 ? 7 : 3} x2="50" y2="13" transform={`rotate(${i * 22.5} 50 50)`} />)}</svg>
+            <span class="sun__core"></span>
+          </span></span>
+          <span class="sts__v-copy"><span class="sts__name">{sunStep.name}</span><span class="sts__text">{H('Where every system starts.', 'हर सिस्टम यहीं से शुरू होता है।')}</span></span>
+        </span>
+        {nodes.slice(0, 4).map((n, i) => (
+          <a class="sts__node sts__node--row" href={href(n.href, lang)} data-sts-vnode={n.id}>
+            <span class="sts__orb"><Img id={n.img} lang={lang} sizes="112px" widths={[160, 240]} tag={false} alt="" /><span class="sts__num mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span></span>
+            <span class="sts__v-copy"><span class="sts__name">{n.name}</span><span class="sts__text">{n.text}</span></span>
+          </a>
+        ))}
+      </div>
+      <div class="sts__v-branches">
+        <div class="sts__v-branch">
+          {nodes.slice(4, 6).map((n, i) => (
+            <a class="sts__node" href={href(n.href, lang)} data-sts-vnode={n.id}>
+              {n.branch && <span class="sts__branch-label">{n.branch}</span>}
+              <span class="sts__orb">
+                <Img id={n.img} lang={lang} sizes="104px" widths={[160, 240]} tag={false} alt="" />
+                {n.lit && <span class="sts__lit"><Img id={n.lit} lang={lang} sizes="104px" widths={[160, 240]} tag={false} alt="" /></span>}
+                <span class="sts__num mono" aria-hidden="true">{String(i + 5).padStart(2, '0')}</span>
+              </span>
+              <span class="sts__name">{n.name}</span>
+              <span class="sts__text">{n.text}</span>
+            </a>
+          ))}
+        </div>
+        <div class="sts__v-branch">
+          {nodes.slice(6).map((n) => (
+            <a class="sts__node" href={href(n.href, lang)} data-sts-vnode={n.id}>
+              {n.branch && <span class="sts__branch-label">{n.branch}</span>}
+              <span class="sts__orb sts__orb--tall">
+                <Img id={n.img} lang={lang} sizes="104px" widths={[160, 240]} tag={false} alt="" />
+                {n.lit && <span class="sts__lit"><Img id={n.lit} lang={lang} sizes="104px" widths={[160, 240]} tag={false} alt="" /></span>}
+                <span class="sts__num mono" aria-hidden="true">07</span>
+              </span>
+              <span class="sts__name">{n.name}</span>
+              <span class="sts__text">{n.text}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="sts__close reveal">
+      <p>{H('One line of power. Every home and every street it reaches.', 'बिजली की एक लाइन। हर घर और हर सड़क तक।')}</p>
+      <p class="sts__tagline" lang="en">Brighter tomorrow together</p>
+      <p class="sts__note" data-sample="Claim to confirm (A5)">{H('Every stop on this line is something Ecorayy supplies and installs.', 'Ecorayy इन सभी को सप्लाई और इंस्टॉल करती है।')}</p>
+    </div>
+  </div>
+  <script type="application/json" data-sts-steps set:html={JSON.stringify(steps.map((s) => ({ id: s.id, name: s.name, long: s.long, cta: s.cta, href: href(s.href, lang) })))} />
+</section>
+
+<script>
+  import { initSunToSwitch } from '../scripts/sun-to-switch';
+  initSunToSwitch();
+</script>

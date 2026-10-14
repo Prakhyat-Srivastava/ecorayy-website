@@ -1,0 +1,36 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import { categories, categoryUrl } from '../../data/products';
+const groups = [
+  { id: 'company', title: 'Company', items: [{ t: 'Company profile & registrations pack', d: 'Profile, scope of work, Directors and certificates · under 5 MB' }] },
+  { id: 'products', title: 'Product catalogues', items: [{ t: 'Full product catalogue', d: 'All categories' }, ...categories.map((c) => ({ t: `${c.name} catalogue`, d: c.short }))] },
+  { id: 'datasheets', title: 'Datasheets', items: [{ t: 'Product datasheets', d: 'One per product family, also on each product page' }] },
+  { id: 'warranty', title: 'Warranty', items: [{ t: 'Warranty terms', d: 'What’s covered, for how long, and how to claim' }] },
+];
+---
+<Base title="Downloads" description="Ecorayy company profile, product catalogues, datasheets and warranty documents. Free, never behind a form." ogImage="dl01">
+  <PageHero crumbs={[{ label: 'Home', href: u('/') }, { label: 'Downloads' }]} label="Downloads" title="Catalogues, datasheets and our company profile." lead="Free to download, never behind a form, with the file size shown on every button, so nobody spends mobile data on a surprise." image="dl01" wide />
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container container--narrow">
+      <p class="notice notice--info" data-sample="Files not yet available (C10, C18, E2)"><Icon name="info" /><span><strong>Files are being prepared.</strong> Each document will be available here before launch, with its file size.</span></p>
+      {groups.map((g) => (
+        <div id={g.id} style="margin-top:40px;scroll-margin-top:110px">
+          <h2 class="h3" style="margin-bottom:14px">{g.title}</h2>
+          <div class="downloads-list">
+            {g.items.map((it) => (
+              <div class="dl-row">
+                <span class="dl-row__icon"><Icon name="file" /></span>
+                <span><strong>{it.t}</strong><span>{it.d} · PDF</span></span>
+                <button class="btn btn--quiet btn--sm" type="button" disabled>Soon</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+      <p class="muted" style="margin-top:40px">Looking for a specific product? <a href={u('/products/')}>Browse the catalogue</a>, every product page has its own downloads.</p>
+    </div>
+  </section>
+</Base>

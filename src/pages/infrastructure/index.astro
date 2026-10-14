@@ -1,0 +1,68 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Img from '../../components/Img.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import LinkCard from '../../components/ui/LinkCard.astro';
+import Steps from '../../components/ui/Steps.astro';
+import Registrations from '../../components/Registrations.astro';
+import { services } from '../../data/infrastructure';
+const scope = [
+  { icon: 'map-pin', title: 'Survey', text: 'Site visit, measurements and existing infrastructure.' },
+  { icon: 'ruler', title: 'Design', text: 'Lighting levels, pole spacing and circuit design.' },
+  { icon: 'box', title: 'Supply', text: 'Poles, fittings, cables, panels and controls.' },
+  { icon: 'tool', title: 'Installation', text: 'Erection, cabling, testing and handover.' },
+  { icon: 'wrench', title: 'Maintenance', text: 'Annual maintenance contracts and fault response.' },
+];
+---
+<Base title="Infrastructure" description="Street, highway and public lighting, traffic signals, rural electrification and smart-city works, for nagar palikas, panchayats, public sector bodies and private developers." ogImage="inf01">
+  <PageHero
+    crumbs={[{ label: 'Home', href: u('/') }, { label: 'Infrastructure' }]}
+    label="Infrastructure"
+    title="Street, highway and public lighting, planned and installed."
+    lead="For nagar palikas, panchayats, public sector bodies and private developers. Registrations ready, documents downloadable, people you can call."
+    image="inf01"
+  >
+    <div class="cluster">
+      <a class="btn" href={u('/infrastructure/government-tenders/')}><Icon name="landmark" />Government & tenders</a>
+      <a class="btn btn--secondary" href={u('/downloads/#company')}><Icon name="download" />Company profile (PDF)</a>
+    </div>
+  </PageHero>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label="What we do" title="Four kinds of public works." />
+      <div class="grid card-grid-4">
+        {services.map((s, i) => <LinkCard href={u(`/infrastructure/${s.slug}/`)} image={s.image} title={s.name} text={s.short} delay={i} sizes="(min-width: 1100px) 24vw, (min-width: 600px) 45vw, 100vw" />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead label="Typical scope" title="From survey to maintenance contract." />
+      <Steps steps={scope} horizontal />
+    </div>
+  </section>
+
+  <section class="section section--night">
+    <div class="container split">
+      <div class="stack reveal" style="--stack:18px">
+        <span class="label">For procurement officers</span>
+        <h2 class="h2">Is it real? Is it eligible? Can it execute?</h2>
+        <p class="lead">Our Government & tenders page answers the three questions every procurement officer asks, with registrations you can verify, dates on everything, and a single downloadable pack.</p>
+        <a class="btn btn--on-night" href={u('/infrastructure/government-tenders/')} style="justify-self:start">Open Government & tenders<Icon name="arrow-right" /></a>
+      </div>
+      <div class="frame frame--4x3 frame--night reveal" data-delay="1"><Img id="inf05" sizes="(min-width: 900px) 45vw, 100vw" /></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead label="Registrations" title="Checkable on government portals." />
+      <Registrations prefix="infra" />
+    </div>
+  </section>
+</Base>

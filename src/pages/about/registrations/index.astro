@@ -1,0 +1,53 @@
+---
+import { u } from '../../../lib/url';
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
+import SectionHead from '../../../components/ui/SectionHead.astro';
+import Certificate from '../../../components/Certificate.astro';
+import { company, registrations } from '../../../data/site';
+---
+<Base title="Registrations & licences" description="Ecorayy Power Tech’s CIN, GSTIN, Udyam and DPIIT registrations, with step-by-step instructions to verify each one on official portals." ogImage="dl01">
+  <section class="page-hero" style="padding-bottom:clamp(32px,4vw,56px)">
+    <div class="container page-hero__copy" style="max-width:900px">
+      <Breadcrumbs items={[{ label: 'Home', href: u('/') }, { label: 'About', href: u('/about/') }, { label: 'Registrations & licences' }]} />
+      <span class="label">Registrations & licences</span>
+      <h1 class="h1">Every number, and how to check it yourself.</h1>
+      <p class="lead">Don’t take our word for it. Each registration below can be verified on an official government portal in under a minute.</p>
+    </div>
+  </section>
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container"><Certificate id="reg" variant="feature" /></div>
+  </section>
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container reg-list">
+      {registrations.map((r) => (
+        <article class="reg-card reveal">
+          <div class="stack" style="--stack:8px">
+            <span class="reg__k">{r.issuer.en}</span>
+            <h2 class="h3">{r.label.en}</h2>
+            <p class="reg__v" style="font-size:1.25rem">{r.value}</p>
+            <p class="muted">{r.meta.en}</p>
+          </div>
+          <div class="stack" style="--stack:10px">
+            <h3 class="h4">How to verify</h3>
+            <ol>{r.steps.en.map((s) => <li>{s}</li>)}</ol>
+            <a class="link-arrow" href={r.portal.href} target="_blank" rel="noopener">{r.portal.label}<Icon name="external" /></a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+  <section class="section section--paper">
+    <div class="container split" style="align-items:start">
+      <div>
+        <SectionHead label="Product licences" title="BIS licences and registrations" text="Product licences and BIS registrations are listed on each product page, with the standard and how to verify them, as they are confirmed. Where a licence is not yet confirmed, the product page says nothing about certification rather than something vague." />
+      </div>
+      <div class="card card--pad">
+        <h3 class="h4">Why only one certificate is shown</h3>
+        <p class="muted" style="margin-top:8px">The DPIIT certificate contains only company details, so it is shown above. Other certificates include personal details that don’t belong on a public page; their numbers and verification steps are listed here, and complete copies are in the company profile and registrations pack for procurement officers.</p>
+        <a class="link-arrow" href={u('/infrastructure/government-tenders/#pack')} style="margin-top:8px">Government & tenders<Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,65 @@
+---
+import { u } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import DirectorsMini from '../components/DirectorsMini.astro';
+import PhotoPending from '../components/ui/PhotoPending.astro';
+import { tr } from '../data/i18n';
+import { company, contact, type Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(company.registeredOffice.oneLine)}`;
+const roles = [
+  [H('Solar enquiries', 'सोलर पूछताछ'), 'sun'],
+  [H('Infrastructure & tenders', 'इन्फ्रास्ट्रक्चर और टेंडर'), 'landmark'],
+  [H('Dealers & distributors', 'डीलर और डिस्ट्रीब्यूटर'), 'handshake'],
+  [H('Support & warranty', 'सहायता और वारंटी'), 'wrench'],
+];
+---
+<Base lang={lang} title={H('Contact', 'संपर्क')} description={H('Talk to Ecorayy about solar, street and public lighting, products, dealership or support. One short form, five purposes.', 'सोलर, लाइटिंग, उत्पाद, डीलरशिप या सहायता के लिए Ecorayy से संपर्क करें।')}>
+  <section class="page-hero" style="padding-bottom:clamp(24px,3vw,40px)">
+    <div class="container page-hero__copy">
+      <Breadcrumbs items={[{ label: H('Home', 'होम'), href: hi ? u('/hi/') : u('/') }, { label: H('Contact', 'संपर्क') }]} />
+      <span class="label">{H('Contact', 'संपर्क')}</span>
+      <h1 class="h1">{H('How can we help?', 'हम आपकी कैसे मदद कर सकते हैं?')}</h1>
+      <p class="lead">{H('Choose what it’s about, leave four details, and we’ll come back to you. Or call, WhatsApp or visit, whichever is easier.', 'विषय चुनें, चार विवरण भरें, और हम आपसे संपर्क करेंगे। या कॉल, WhatsApp करें या मिलने आएँ, जो भी आसान हो।')}</p>
+    </div>
+  </section>
+
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container contact-layout">
+      <EnquiryForm lang={lang} showIntents intent="products" id="contact-form" />
+
+      <aside class="contact-aside">
+        <div class="card">
+          <h2 class="h4">{H('Reach us directly', 'सीधे संपर्क करें')}</h2>
+          <ul class="contact-list" role="list">
+            <li class="contact-item" data-sample="Phone (B3)"><span class="icon-circle"><Icon name="phone" /></span><span><strong>{contact.phoneDisplay}</strong><span>{H('Phone · number coming soon', 'फ़ोन · नंबर जल्द')}</span></span></li>
+            <li class="contact-item" data-sample="WhatsApp (B4)"><span class="icon-circle"><Icon name="chat" /></span><span><strong>WhatsApp</strong><span>{H('Business number coming soon', 'बिज़नेस नंबर जल्द')}</span></span></li>
+            <li class="contact-item" data-sample="Email on own domain (B2)"><span class="icon-circle"><Icon name="mail" /></span><span><strong>{contact.email}</strong><span>{H('Email · address coming soon', 'ईमेल · पता जल्द')}</span></span></li>
+            <li class="contact-item" data-sample="Hours (B5)"><span class="icon-circle"><Icon name="clock" /></span><span><strong>{tr(contact.hours, lang)}</strong><span>{tr(contact.responsePromise, lang)}</span></span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2 class="h4">{H('Registered office', 'पंजीकृत कार्यालय')}</h2>
+          <p><strong>{company.legalName}</strong><br />{company.registeredOffice.street}<br />{company.registeredOffice.city}, {company.registeredOffice.state} {company.registeredOffice.pin}</p>
+          <PhotoPending title={H('Photo of our entrance', 'हमारे प्रवेश द्वार की फ़ोटो')} text={H('A real photograph will appear here.', 'यहाँ असली फ़ोटो लगेगी।')} ratio="16 / 9" note="Entrance photo + visiting address (B6)" />
+          <a class="link-arrow" href={mapHref} target="_blank" rel="noopener"><Icon name="map-pin" />{H('Open in Google Maps', 'Google Maps में खोलें')}<Icon name="external" /></a>
+        </div>
+        <div class="card">
+          <h2 class="h4">{H('Who you’ll speak to', 'आप किससे बात करेंगे')}</h2>
+          <ul class="contact-list" role="list" data-sample="Named contacts (B7)">
+            {roles.map(([r, i]) => <li class="contact-item"><span class="icon-circle"><Icon name={i} /></span><span><strong>{r}</strong><span>{H('Name and direct number coming soon', 'नाम और सीधा नंबर जल्द')}</span></span></li>)}
+          </ul>
+          <hr style="border:0;border-top:1px solid var(--line)" />
+          <DirectorsMini lang={lang} size={56} />
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>

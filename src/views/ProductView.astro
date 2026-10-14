@@ -1,0 +1,193 @@
+---
+import { u } from '../lib/url';
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Img from '../components/Img.astro';
+import Icon from '../components/Icon.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import Faq from '../components/ui/Faq.astro';
+import { images, type ImageId } from '../data/images';
+import { CCT_SWATCH, categoryUrl, familyUrl, getCategory, getFamily, type Family } from '../data/products';
+
+interface Props { family: Family }
+const { family: f } = Astro.props;
+const cat = getCategory(f.category)!;
+const sub = cat.subs?.find((s) => s.slug === f.sub);
+const gallery: ImageId[] = f.gallery ?? [f.image];
+const v0 = f.variants[0];
+const url = familyUrl(f);
+const thumb = await getImage({ src: images[f.image].src, width: 160, height: 160, fit: 'cover', format: 'webp', quality: 70 });
+const item0 = { sku: v0.sku, name: f.name, variant: v0.label, unit: f.unit, img: thumb.src, url: `${url}?v=${v0.sku}` };
+const axisValues = f.axes.map((a) => ({ ...a, values: [...new Set(f.variants.map((v) => v.v[a.key]))] }));
+const specs0 = f.specs(v0);
+const clientData = {
+  url, name: f.name, unit: f.unit, img: thumb.src,
+  axes: f.axes.map((a) => a.key),
+  variants: f.variants.map((v) => ({
+    sku: v.sku, label: v.label,
+    sel: Object.fromEntries(f.axes.map((a) => [a.key, v.v[a.key]])),
+    key: f.keySpecs.map((k) => v.v[k.key] ?? '-'),
+    specs: f.specs(v).map((g) => g.rows.map((r) => r[1])),
+  })),
+};
+const related = f.worksWith.map(getFamily).filter(Boolean) as Family[];
+const crumbs = [
+  { label: 'Home', href: u('/') },
+  { label: 'Products', href: u('/products/') },
+  { label: cat.name, href: categoryUrl(cat.slug) },
+  ...(sub ? [{ label: sub.name, href: categoryUrl(cat.slug, sub.slug) }] : []),
+  { label: f.name },
+];
+const thumbs = await Promise.all(gallery.map(async (g) => (await getImage({ src: images[g].src, width: 152, height: 152, fit: 'cover', format: 'webp', quality: 70 })).src));
+const litIndex = f.litImage ? gallery.indexOf(f.litImage) : -1;
+---
+<Base title={f.name} description={`${f.benefit} Sample product page, ${f.variants.length} variants.`} ogImage={f.image}>
+  <section class="section section--tight" style="padding-top:clamp(20px,3vw,40px)">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <div class="product" style="margin-top:20px" data-product>
+        <div class="product__gallery">
+          <div class="gallery" data-gallery>
+            <div class="gallery__main" data-gallery-main>
+              {gallery.map((g, i) => (
+                <div class:list={['gallery__slide', { 'is-active': i === 0 }]} data-slide={i}>
+                  <Img id={g} eager={i === 0 || i === litIndex} sizes="(min-width: 960px) 52vw, 100vw" vt={i === 0 ? `p-${f.slug}` : undefined} tag={false} />
+                </div>
+              ))}
+              <span class="frame__tag" data-sample="Placeholder product image (C12)">Representative image</span>
+              {litIndex > 0 && (
+                <button class="power-toggle" type="button" role="switch" aria-checked="false" data-power data-lit={litIndex}>
+                  <span data-power-label>Light off</span><span class="power-toggle__track" aria-hidden="true"></span>
+                </button>
+              )}
+            </div>
+            {gallery.length > 1 && (
+              <div class="gallery__thumbs" role="group" aria-label="Product images">
+                {gallery.map((g, i) => (
+                  <button class="gallery__thumb" type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-thumb={i} aria-label={`Image ${i + 1} of ${gallery.length}`}>
+                    <img src={thumbs[i]} alt="" width="76" height="76" loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div class="pinfo">
+          <div class="stack" style="--stack:12px">
+            <span class="label">{f.series}</span>
+            <h1 class="pinfo__title">{f.name}</h1>
+            <p class="pinfo__benefit">{f.benefit}</p>
+          </div>
+          <p class="notice notice--info" data-sample="Sample product data (C1–C3)">
+            <Icon name="info" />
+            <span><strong>Sample product.</strong> Specifications are typical industry values used to demonstrate this page. Real Ecorayy product data will replace them before launch.</span>
+          </p>
+
+          {axisValues.map((a) => (
+            <fieldset class="variant-group">
+              <legend>{a.label} <span data-axis-current={a.key}>{v0.v[a.key]}</span></legend>
+              <div class="variant-chips">
+                {a.values.map((val) => (
+                  <button class="chip" type="button" aria-pressed={v0.v[a.key] === val ? 'true' : 'false'} data-axis={a.key} data-value={val}>
+                    {a.key === 'cct' && <span class="chip__swatch" style={`background:${CCT_SWATCH[val] ?? '#fff'}`}></span>}
+                    {val}{a.key === 'cct' && <span class="muted" style="font-weight:500"> · {f.variants.find((v) => v.v.cct === val)?.v.colourName}</span>}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+          ))}
+
+          <div class="keyspecs" data-keyspecs>
+            {f.keySpecs.map((k, i) => (
+              <div class="keyspec"><span class="keyspec__v" data-key={i}>{v0.v[k.key] ?? '-'}</span><span class="keyspec__k">{k.label}</span></div>
+            ))}
+          </div>
+          <p class="sku-line">SKU <span class="mono" data-sku>{v0.sku}</span> · {f.variants.length} variants</p>
+
+          <div class="actions-row">
+            <div class="qty" role="group" aria-label="Quantity">
+              <button type="button" data-step="-1" aria-label="Decrease quantity"><Icon name="minus" /></button>
+              <input id="pqty" type="number" inputmode="numeric" min="1" max="9999" value="1" aria-label="Quantity" />
+              <button type="button" data-step="1" aria-label="Increase quantity"><Icon name="plus" /></button>
+            </div>
+            <span class="qty__unit" data-unit>{f.unit.one}{f.unit.note ? ` · ${f.unit.note}` : ''}</span>
+          </div>
+          <div class="actions-row">
+            <button class="btn" type="button" data-quote-now data-qty-from="#pqty" data-item={JSON.stringify(item0)}><span data-label>Get a quote</span><Icon name="arrow-right" /></button>
+            <button class="btn btn--secondary" type="button" data-add-quote data-qty-from="#pqty" data-item={JSON.stringify(item0)}><Icon name="plus" /><span data-label>Add to Quote List</span></button>
+          </div>
+          <p class="small muted" data-sample="WhatsApp (B4)"><Icon name="chat" size={16} class="inline-icon" /> Ask on WhatsApp, number coming soon</p>
+
+          <div class="trust-strip">
+            <div class="trust-strip__row" data-sample="Origin to confirm (C2)"><Icon name="check-circle" /><span><strong>Supplied by Ecorayy.</strong> Manufacturer name will be shown here once confirmed.</span></div>
+            <div class="trust-strip__row"><Icon name="file" /><span><strong>Dealer and bulk pricing on request.</strong> Send one list for the whole job.</span></div>
+            <div class="trust-strip__row"><Icon name="shield-check" /><span>Company registrations are <a href={u('/about/registrations/')}>public and verifiable</a>.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight section--paper">
+    <div class="container product-details">
+      <div class="stack" style="--stack:28px">
+        <div class="stack" style="--stack:12px" data-sample="Engineer review needed (C13)">
+          <h2 class="h3">Where to use it</h2>
+          <ul class="ticks" role="list">{f.where.map((w) => <li><Icon name="check" />{w}</li>)}</ul>
+        </div>
+        <div class="stack" style="--stack:12px">
+          <h2 class="h3">Downloads</h2>
+          <div class="downloads-list">
+            {['Datasheet', 'Installation guide', 'Certificate'].map((d) => (
+              <div class="dl-row" data-sample="File not yet available (C10)">
+                <span class="dl-row__icon"><Icon name="file" /></span>
+                <span><strong>{d}</strong><span>PDF · available before launch</span></span>
+                <button class="btn btn--quiet btn--sm" type="button" disabled>Soon</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div class="stack" style="--stack:14px">
+        <h2 class="h3">Specifications</h2>
+        <div class="spec-groups" data-specs>
+          {specs0.map((g, gi) => (
+            <details class="spec-group" open={gi < 2}>
+              <summary>{g.title}<Icon name="chevron-down" /></summary>
+              <table class="spec-table">
+                <tbody>
+                  {g.rows.map((r, ri) => <tr><th scope="row">{r[0]}</th><td data-spec={`${gi}-${ri}`}>{r[1]}</td></tr>)}
+                </tbody>
+              </table>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section section--tight">
+      <div class="container">
+        <div class="section-head reveal"><span class="label">Works with</span><h2 class="h2">Often chosen together</h2></div>
+        <div class="product-grid">{related.map((r) => <ProductCard family={r} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="section section--tight section--paper">
+    <div class="container container--narrow">
+      <div class="section-head reveal"><span class="label">Questions</span><h2 class="h2">Frequently asked</h2></div>
+      <Faq items={f.faqs} sample="Sample FAQs (C15)" />
+    </div>
+  </section>
+
+  <script type="application/json" data-product-data set:html={JSON.stringify(clientData)} />
+</Base>
+
+<script>
+  import { initProduct } from '../scripts/product';
+  initProduct();
+</script>

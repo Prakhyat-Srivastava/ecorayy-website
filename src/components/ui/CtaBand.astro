@@ -1,0 +1,18 @@
+---
+import Icon from '../Icon.astro';
+import { contact, type Lang } from '../../data/site';
+import { tr } from '../../data/i18n';
+interface Props { title: string; text: string; primary: { label: string; href: string }; secondary?: { label: string; href: string }; lang?: Lang }
+const { title, text, primary, secondary, lang = 'en' } = Astro.props;
+---
+<div class="cta-band reveal">
+  <div class="stack" style="--stack:14px">
+    <h2 class="h2">{title}</h2>
+    <p class="lead">{text}</p>
+    <p class="small muted" data-sample="Response promise (B8)"><Icon name="clock" size={16} class="inline-icon" /> {tr(contact.responsePromise, lang)}</p>
+  </div>
+  <div class="grid" style="--gap:12px">
+    <a class="btn" href={primary.href}>{primary.label}<Icon name="arrow-right" /></a>
+    {secondary && <a class="btn btn--secondary" href={secondary.href}>{secondary.label}</a>}
+  </div>
+</div>

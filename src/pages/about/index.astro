@@ -1,0 +1,73 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Img from '../../components/Img.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import LinkCard from '../../components/ui/LinkCard.astro';
+import DirectorsPair from '../../components/DirectorsPair.astro';
+import { company, directors } from '../../data/site';
+---
+<Base title="Our story" description="Ecorayy Power Tech was incorporated in Etawah, Uttar Pradesh on 24 June 2026, a solar and electrical infrastructure company that also supplies electrical products." ogImage="br01">
+  <section class="story-hero">
+    <div class="story-hero__img"><Img id="br01" eager sizes="100vw" widths={[800, 1280, 1920, 2400]} /></div>
+    <div class="story-hero__copy">
+      <div class="container"><div class="inner">
+        <span class="label">About Ecorayy</span>
+        <h1 class="display" style="font-size:clamp(2.4rem,1.6rem+3vw,4rem)">Our story</h1>
+        <p class="lead" style="color:var(--slate-600)">A new company, built around today’s solar and LED technology, from Etawah, for the homes, businesses and public spaces around it.</p>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="facts reveal">
+        <div class="fact"><span class="fact__k">Incorporated</span><span class="fact__v">{company.incorporated.en}<br /><span class="muted small" style="font-weight:500">Etawah, Uttar Pradesh</span></span></div>
+        <div class="fact"><span class="fact__k">Recognised by</span><span class="fact__v">DPIIT, Ministry of Commerce & Industry<br /><span class="muted small" style="font-weight:500">Startup recognition in Renewable Energy and Electrical Equipment</span></span></div>
+        <div class="fact"><span class="fact__k">Registered as</span><span class="fact__v">Micro enterprise (Udyam)<br /><span class="muted small" style="font-weight:500">Private limited company · CIN {company.cin}</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <DirectorsPair />
+
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container">
+      <div class="note-card reveal" data-sample="Note from the Directors, draft (L10)">
+        <span class="label">A note from the Directors</span>
+        <blockquote>
+          <p>We started Ecorayy because solar and efficient lighting have become practical for ordinary homes, farms and towns, and the people buying them deserve a company that explains things plainly and stands behind its work.</p>
+          <p>We are new, and we say so. What we can offer instead of a long history is this: registrations you can check, prices in writing, and people who answer the phone.</p>
+        </blockquote>
+        <div class="note-card__sign">
+          {directors.map((d) => (
+            <a class="person-mini" href={u('/about/team/')}>
+              <span class="avatar" style="--size:56px"><Img id={d.circle as any} sizes="56px" widths={[56, 112]} tag={false} /></span>
+              <span><strong>{d.name}</strong><span class="role-label">Director</span></span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label="What we do" title="Solar first. Infrastructure. Products." text="Three pillars, in that order: solar for homes, businesses and farms; lighting and electrification for public bodies; and the electrical products in between." />
+      <div class="grid card-grid-3">
+        <LinkCard href={u('/solar/')} image="sol01" title="Solar" text="Rooftop, business and ground-mount solar, pumps and storage." delay={0} />
+        <LinkCard href={u('/infrastructure/')} image="inf01" title="Infrastructure" text="Street, highway and public lighting, signals and rural electrification." delay={1} />
+        <LinkCard href={u('/products/')} image="prd00" title="Products" text="Lighting, switches, wires, switchgear and solar equipment." delay={2} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid card-grid-3">
+      <LinkCard href={u('/about/team/')} icon="users" title="Leadership" text="The Directors accountable for Ecorayy." />
+      <LinkCard href={u('/about/how-we-work/')} icon="tool" title="How we work" text="Our team, equipment and process, shown as it is." />
+      <LinkCard href={u('/about/registrations/')} icon="shield-check" title="Registrations & licences" text="Every number, with how to verify it yourself." />
+    </div>
+  </section>
+</Base>

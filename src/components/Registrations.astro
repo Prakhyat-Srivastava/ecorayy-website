@@ -1,0 +1,17 @@
+---
+import Verify from './Verify.astro';
+import { registrations, type Lang } from '../data/site';
+import { tr } from '../data/i18n';
+interface Props { lang?: Lang; prefix: string }
+const { lang = 'en', prefix } = Astro.props;
+---
+<div class="reg-grid">
+  {registrations.map((r, i) => (
+    <div class="reg reveal" data-delay={i}>
+      <span class="reg__k">{tr(r.label, lang)}</span>
+      <span class="reg__v">{r.value}</span>
+      <span class="reg__meta">{tr(r.meta, lang)}</span>
+      <Verify reg={r} lang={lang} prefix={prefix} />
+    </div>
+  ))}
+</div>

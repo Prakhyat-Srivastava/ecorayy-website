@@ -1,0 +1,84 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Img from '../../components/Img.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import LinkCard from '../../components/ui/LinkCard.astro';
+import Steps from '../../components/ui/Steps.astro';
+import CtaBand from '../../components/ui/CtaBand.astro';
+import { href } from '../../data/i18n';
+import type { Lang } from '../../data/site';
+import { solarSteps } from './steps';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+const cards = [
+  { href: href('/solar/homes/', lang), image: 'sol02' as const, title: H('Solar for homes', 'घरों के लिए सोलर'), text: H('Rooftop systems sized to your bill, on an elevated frame so your terrace stays usable.', 'आपके बिल के हिसाब से रूफ़टॉप सिस्टम, ऊँचे ढाँचे पर, ताकि छत इस्तेमाल में रहे।') },
+  { href: href('/solar/business/', lang), image: 'sol03' as const, title: H('Businesses & institutions', 'व्यवसाय और संस्थान'), text: H('Factories, cold storages, schools, hospitals and offices, with battery storage where outages cost money.', 'फ़ैक्ट्री, कोल्ड स्टोरेज, स्कूल, अस्पताल और ऑफ़िस, जहाँ बिजली कटौती महँगी पड़ती है वहाँ बैटरी स्टोरेज के साथ।') },
+  { href: href('/solar/parks-epc/', lang), image: 'sol04' as const, title: H('Solar parks & EPC', 'सोलर पार्क और EPC'), text: H('Design, engineering, procurement, installation, commissioning and maintenance.', 'डिज़ाइन, इंजीनियरिंग, खरीद, इंस्टॉलेशन, कमीशनिंग और रखरखाव।') },
+  { href: href('/solar/pumps/', lang), image: 'sol05' as const, title: H('Solar pumps', 'सोलर पंप'), text: H('Irrigation powered by the sun, which pump for how much water, from what depth.', 'सूरज से चलने वाली सिंचाई, कितने पानी और कितनी गहराई के लिए कौन-सा पंप।') },
+];
+---
+<Base lang={lang} title={H('Solar', 'सोलर')} description={H('Rooftop solar for homes and businesses, solar parks, solar pumps and battery storage, explained plainly, with a savings estimator that shows every assumption.', 'घरों और व्यवसायों के लिए रूफ़टॉप सोलर, सोलर पार्क, सोलर पंप और बैटरी स्टोरेज।')} ogImage="sol01">
+  <PageHero
+    lang={lang}
+    crumbs={[{ label: H('Home', 'होम'), href: href('/', lang) }, { label: H('Solar', 'सोलर') }]}
+    label={H('Solar', 'सोलर')}
+    title={H('Solar for homes, businesses and farms.', 'घरों, व्यवसायों और खेतों के लिए सोलर।')}
+    lead={H('From a 3 kW rooftop to a solar park, explained in plain words, designed around your roof and your bill, and installed properly.', '3 kW की छत से लेकर सोलर पार्क तक, आसान भाषा में, आपकी छत और बिल के हिसाब से, और सही ढंग से इंस्टॉल।')}
+    image="sol01"
+  >
+    <div class="cluster">
+      <a class="btn" href={href('/solar/estimator/', lang)}><Icon name="calculator" />{H('Estimate your savings', 'अपनी बचत का अनुमान लगाएँ')}</a>
+      <a class="btn btn--secondary" href={href('/quote/?intent=solar', lang)}>{H('Book a site survey', 'साइट सर्वे बुक करें')}<Icon name="arrow-right" /></a>
+    </div>
+  </PageHero>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label={H('Choose your solar', 'अपना सोलर चुनें')} title={H('Which of these is you?', 'इनमें से आप कौन हैं?')} />
+      <div class="grid card-grid-4">
+        {cards.map((c, i) => <LinkCard {...c} lang={lang} delay={i} sizes="(min-width: 1100px) 24vw, (min-width: 600px) 45vw, 100vw" />)}
+      </div>
+      <div class="grid card-grid-2" style="margin-top:16px">
+        <LinkCard href={href('/solar/how-it-works/', lang)} icon="route" title={H('How a solar project works', 'सोलर प्रोजेक्ट कैसे होता है')} text={H('Survey, design, installation, net meter, service, who does what, and what you do.', 'सर्वे, डिज़ाइन, इंस्टॉलेशन, नेट मीटर, सेवा, कौन क्या करता है, और आपको क्या करना है।')} lang={lang} />
+        <LinkCard href={href('/solar/estimator/', lang)} icon="calculator" title={H('Solar savings estimator', 'सोलर बचत अनुमान')} text={H('Size, cost, savings and payback in a minute, with every assumption shown.', 'एक मिनट में साइज़, लागत, बचत और लागत-वसूली, हर आधार के साथ।')} lang={lang} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead label={H('How it works', 'कैसे होता है')} title={H('Five steps, from survey to switch-on.', 'सर्वे से चालू होने तक, पाँच कदम।')} text={H('We handle the technical and paperwork steps; you make the decisions.', 'तकनीकी काम और कागज़ी कार्रवाई हम संभालते हैं; फ़ैसले आप लेते हैं।')} />
+      <Steps steps={solarSteps(lang)} horizontal whoLabel={H('Who', 'कौन')} youLabel={H('You', 'आप')} />
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="light-band reveal">
+        <div class="light-band__img"><Img id="br03" lang={lang} sizes="(min-width: 1280px) 1240px, 100vw" widths={[640, 960, 1280, 2000]} alt="" /></div>
+        <div class="light-band__copy">
+          <span class="label">{H('Our promise', 'हमारा वादा')}</span>
+          <p class="light-band__line"><span lang="en">Brighter tomorrow</span>{H(', literally.', ', सचमुच।')}</p>
+          <p class="light-band__sub">{H('Every morning your roof starts working for you. We make sure it works well, for years.', 'हर सुबह आपकी छत आपके लिए काम करने लगती है। हम ध्यान रखते हैं कि यह सालों तक अच्छे से काम करे।')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container">
+      <CtaBand
+        lang={lang}
+        title={H('Start with a free site survey.', 'मुफ़्त साइट सर्वे से शुरुआत करें।')}
+        text={H('We look at your roof, your bill and your connection, and tell you honestly what makes sense.', 'हम आपकी छत, बिल और कनेक्शन देखते हैं, और ईमानदारी से बताते हैं कि क्या सही रहेगा।')}
+        primary={{ label: H('Book a site survey', 'साइट सर्वे बुक करें'), href: href('/quote/?intent=solar', lang) }}
+        secondary={{ label: H('Estimate first', 'पहले अनुमान देखें'), href: href('/solar/estimator/', lang) }}
+      />
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,40 @@
+---
+import { u } from '../lib/url';
+/**
+ * Home hero composition: the Sun-to-Street scene, with a single leadership
+ * card overlapping its corner that presents both Directors side by side at
+ * equal size. Portraits are only cropped and framed, never altered.
+ */
+import Img from './Img.astro';
+import Icon from './Icon.astro';
+import { directors, type Lang } from '../data/site';
+import { tr } from '../data/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+---
+<div class="stage">
+  <div class="stage__scene">
+    <div class="frame frame--night stage__scene-frame">
+      <Img id="hm01" lang={lang} eager sizes="(min-width: 960px) 40vw, 100vw" position="64% 50%" />
+    </div>
+  </div>
+  <aside class="hl" aria-labelledby="hl-title">
+    <div class="hl__head">
+      <span id="hl-title" class="hl__title">{hi ? 'नेतृत्व' : 'Leadership'}</span>
+      <a class="hl__more" href={u('/about/team/')}>{hi ? 'निदेशकों से मिलें' : 'Meet the Directors'}<Icon name="arrow-right" /></a>
+    </div>
+    <div class="hl__people">
+      {directors.map((d, i) => (
+        <a class="hl__person" href={u('/about/team/')}>
+          <span class="hl__photo">
+            <Img id={d.image as any} lang={lang} eager sizes="(min-width: 960px) 150px, 42vw" widths={[200, 320, 480, 640]} tag={false} position={i === 0 ? '46% 14%' : '38% 12%'} />
+          </span>
+          <span class="hl__name">{d.name}</span>
+          <span class="hl__role">{tr(d.role, lang)}</span>
+        </a>
+      ))}
+    </div>
+  </aside>
+</div>

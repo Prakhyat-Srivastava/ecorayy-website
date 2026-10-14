@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import Steps from '../../components/ui/Steps.astro';
+import CtaBand from '../../components/ui/CtaBand.astro';
+import { href } from '../../data/i18n';
+import type { Lang } from '../../data/site';
+import { solarSteps } from './steps';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+const docs = [
+  H('A recent electricity bill', 'हाल का बिजली बिल'),
+  H('Proof of ownership of the property, or the owner’s consent', 'संपत्ति का स्वामित्व प्रमाण, या मालिक की सहमति'),
+  H('Identity proof of the connection holder', 'कनेक्शन धारक का पहचान प्रमाण'),
+  H('A cancelled cheque or bank details, where a subsidy applies', 'जहाँ सब्सिडी लागू हो, वहाँ कैंसल चेक या बैंक विवरण'),
+];
+---
+<Base lang={lang} title={H('How a solar project works', 'सोलर प्रोजेक्ट कैसे होता है')} description={H('Survey, design, installation, net meter and service, who does each step, and what you need to do.', 'सर्वे, डिज़ाइन, इंस्टॉलेशन, नेट मीटर और सेवा, कौन क्या करता है।')} ogImage="sol01">
+  <section class="page-hero">
+    <div class="container container--narrow page-hero__copy">
+      <Breadcrumbs items={[{ label: H('Home', 'होम'), href: href('/', lang) }, { label: H('Solar', 'सोलर'), href: href('/solar/', lang) }, { label: H('How it works', 'कैसे होता है') }]} />
+      <span class="label">{H('How it works', 'कैसे होता है')}</span>
+      <h1 class="h1">{H('From survey to switch-on, in five clear steps.', 'सर्वे से चालू होने तक, पाँच साफ़ कदम।')}</h1>
+      <p class="lead">{H('Every step says who does it and what we need from you. Timings depend on your site and your DISCOM, so we confirm them at the survey.', 'हर कदम बताता है कि कौन करेगा और आपसे क्या चाहिए। समय आपकी साइट और DISCOM पर निर्भर है, इसलिए सर्वे में तय होता है।')}</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="container container--narrow">
+      <Steps steps={solarSteps(lang)} whoLabel={H('Who', 'कौन')} youLabel={H('You', 'आप')} />
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container container--narrow">
+      <SectionHead label={H('Paperwork', 'कागज़ात')} title={H('Documents you’ll usually need', 'आमतौर पर कौन-से दस्तावेज़ चाहिए')} text={H('Requirements vary by DISCOM and scheme; we’ll give you the exact list at the survey.', 'ज़रूरतें DISCOM और योजना के अनुसार बदलती हैं; सर्वे में हम सटीक सूची देंगे।')} />
+      <ul class="ticks reveal" role="list" data-sample="Document list to confirm (D2)">{docs.map((d) => <li><Icon name="check" />{d}</li>)}</ul>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <CtaBand lang={lang} title={H('Ready for step one?', 'पहले कदम के लिए तैयार?')} text={H('Book a site survey, or see a quick estimate first.', 'साइट सर्वे बुक करें, या पहले जल्दी से अनुमान देखें।')} primary={{ label: H('Book a site survey', 'साइट सर्वे बुक करें'), href: href('/quote/?intent=solar', lang) }} secondary={{ label: H('Estimate savings', 'बचत का अनुमान'), href: href('/solar/estimator/', lang) }} />
+    </div>
+  </section>
+</Base>

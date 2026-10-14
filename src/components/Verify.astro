@@ -1,0 +1,22 @@
+---
+import Icon from './Icon.astro';
+import { tr, ui } from '../data/i18n';
+import type { Lang, Registration } from '../data/site';
+
+interface Props { reg: Registration; lang: Lang; prefix: string; label?: string }
+const { reg, lang, prefix, label } = Astro.props;
+const id = `verify-${prefix}-${reg.key}`;
+---
+<button class="verify-btn" type="button" popovertarget={id}>
+  <Icon name="shield-check" />{label ?? ui[lang].verify}
+</button>
+<div id={id} popover class="verify-pop" role="dialog" aria-labelledby={`${id}-t`}>
+  <div class="verify-pop__head">
+    <h4 id={`${id}-t`}>{lang === 'hi' ? `${reg.short} कैसे जाँचें` : `How to verify the ${reg.short}`}</h4>
+    <button class="verify-pop__close" type="button" popovertarget={id} popovertargetaction="hide" aria-label={ui[lang].close}><Icon name="close" /></button>
+  </div>
+  <span class="mono">{reg.value}</span>
+  <ol>{reg.steps[lang].map((s) => <li>{s}</li>)}</ol>
+  <a class="link-arrow" href={reg.portal.href} target="_blank" rel="noopener">{reg.portal.label}<Icon name="external" /></a>
+  <p class="caption" style="margin-top:6px">{tr(reg.issuer, lang)}</p>
+</div>

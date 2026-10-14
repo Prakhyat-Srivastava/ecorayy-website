@@ -1,0 +1,34 @@
+---
+import { getImage } from 'astro:assets';
+import Img from './Img.astro';
+import Icon from './Icon.astro';
+import { images } from '../data/images';
+import { familyUrl, summarise, type Family } from '../data/products';
+
+interface Props { family: Family; sizes?: string }
+const { family: f, sizes = '(min-width: 1200px) 290px, (min-width: 560px) 45vw, 50vw' } = Astro.props;
+const url = familyUrl(f);
+const thumb = await getImage({ src: images[f.image].src, width: 160, height: 160, fit: 'cover', format: 'webp', quality: 70 });
+const v0 = f.variants[0];
+const item = { sku: v0.sku, name: f.name, variant: v0.label, unit: f.unit, img: thumb.src, url: `${url}?v=${v0.sku}` };
+---
+<article class="card card--link pcard" data-family={f.slug} data-sample="Sample product (C1)">
+  <div class="frame">
+    <Img id={f.image} sizes={sizes} vt={`p-${f.slug}`} />
+  </div>
+  <div class="pcard__body">
+    <div>
+      <span class="pcard__series">{f.series}{f.isNew && <span class="tag tag--green" style="margin-left:8px;padding:2px 8px">New</span>}</span>
+      <h3 class="pcard__name"><a class="card__link" href={url}>{f.name}</a></h3>
+    </div>
+    <dl class="pcard__specs">
+      {f.cardSpecs.map((s) => <div><dt>{s.label}</dt><dd data-cardspec={s.key}>{summarise(f, s.key)}</dd></div>)}
+    </dl>
+    <span class="pcard__origin"><Icon name="check-circle" />Supplied by Ecorayy</span>
+    <div class="pcard__foot">
+      <button class="btn btn--secondary btn--sm" type="button" data-add-quote data-item={JSON.stringify(item)}>
+        <Icon name="plus" /><span data-label><span class="btn__long">Add to Quote List</span><span class="btn__short" hidden>Add</span></span>
+      </button>
+    </div>
+  </div>
+</article>

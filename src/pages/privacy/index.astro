@@ -1,0 +1,20 @@
+---
+import { u } from '../../lib/url';
+import LegalPage from '../../components/ui/LegalPage.astro';
+import { company } from '../../data/site';
+---
+<LegalPage title="Privacy notice" description="How Ecorayy collects and uses personal data from enquiries, under India’s Digital Personal Data Protection Act." note="This is a structural draft for legal review. The final wording will be confirmed by a lawyer before launch (DPDP Act and Rules)." sample="Privacy notice, lawyer review (I1)">
+  <h2>Who we are</h2>
+  <p>{company.legalName}, {company.registeredOffice.oneLine} (“Ecorayy”, “we”).</p>
+  <h2>What we collect</h2>
+  <p>When you send an enquiry: your name, mobile number, city or PIN code, the type of customer you are, and anything you choose to add (organisation, GSTIN, email, message, and the items in your Quote List).</p>
+  <p>Your Quote List itself is stored only in your own browser until you send it.</p>
+  <h2>Why we collect it</h2>
+  <p>Only to reply to your enquiry and prepare your quote. If you separately tick the marketing option, we may send product updates on WhatsApp; you can stop these at any time.</p>
+  <h2>How long we keep it</h2>
+  <p>[Retention period to be confirmed.]</p>
+  <h2>Your rights</h2>
+  <p>You can ask to see, correct or erase your personal data, and withdraw consent, by contacting our grievance officer.</p>
+  <h2>Grievance officer</h2>
+  <p>See the <a href={u('/grievance/')}>Grievance officer</a> page.</p>
+</LegalPage>

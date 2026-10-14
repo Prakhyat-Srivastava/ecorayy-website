@@ -1,0 +1,49 @@
+---
+import { u } from '../../../lib/url';
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import Img from '../../../components/Img.astro';
+import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
+import SectionHead from '../../../components/ui/SectionHead.astro';
+import { directors } from '../../../data/site';
+const people = directors.map((d) => ({ '@context': 'https://schema.org', '@type': 'Person', name: d.name, jobTitle: 'Director', worksFor: { '@type': 'Organization', name: 'Ecorayy Power Tech Private Limited' } }));
+const contacts = [
+  ['Solar enquiries', 'sun'], ['Infrastructure & tenders', 'landmark'], ['Dealers & distributors', 'handshake'], ['Support & warranty', 'wrench'],
+];
+---
+<Base title="Leadership" description="The Directors of Ecorayy Power Tech: YY Singh and Rama Yadav." ogImage="br01" jsonLd={people}>
+  <section class="page-hero" style="padding-bottom:clamp(32px,4vw,56px)">
+    <div class="container page-hero__copy">
+      <Breadcrumbs items={[{ label: 'Home', href: u('/') }, { label: 'About', href: u('/about/') }, { label: 'Leadership' }]} />
+      <span class="label">Leadership</span>
+      <h1 class="h1">The people accountable for Ecorayy.</h1>
+    </div>
+  </section>
+
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container">
+      <div class="leaders">
+        {directors.map((d, i) => (
+          <article class="leader reveal" data-delay={i}>
+            <div class="frame"><Img id={d.image as any} eager sizes="(min-width: 720px) 44vw, 100vw" widths={[480, 720, 960, 1280]} tag={false} position="50% 20%" /></div>
+            <div class="stack" style="--stack:10px">
+              <h2 class="leader__name">{d.name}</h2>
+              <span class="role-label">{d.role.en}</span>
+              <div class="conductor" style="margin-block:10px 6px"></div>
+              <p class="leader__bio" data-sample="Bio draft, awaiting Director approval (L5/L6)">{d.bio.en}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container">
+      <SectionHead label="Who you’ll speak to" title="Named contacts for every enquiry." text="Each area will have a named person with a direct number." />
+      <div class="tile-icons" style="--n:4" data-sample="Named contacts (B7)">
+        {contacts.map(([t, i]) => <div class="tile-icon"><span class="icon-circle"><Icon name={i} /></span><h3>{t}</h3><p>Name and direct number coming soon.</p></div>)}
+      </div>
+    </div>
+  </section>
+</Base>

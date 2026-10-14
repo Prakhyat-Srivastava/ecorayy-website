@@ -1,0 +1,22 @@
+---
+import { u } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Img from '../components/Img.astro';
+---
+<Base title="Page not found" description="This page has come unplugged.">
+  <section class="section">
+    <div class="container split">
+      <div class="stack" style="--stack:20px">
+        <span class="label">404</span>
+        <h1 class="h1">This page has come unplugged.</h1>
+        <p class="lead">The link may be old, or the page may have moved. Electricians search old part numbers for years, if you were looking for a product, search will find it.</p>
+        <div class="cluster">
+          <button class="btn" type="button" data-open-search><Icon name="search" />Search the site</button>
+          <a class="btn btn--secondary" href={u('/')}>Go to the home page</a>
+        </div>
+      </div>
+      <div class="frame frame--1x1"><Img id="br02" eager sizes="(min-width: 900px) 45vw, 100vw" /></div>
+    </div>
+  </section>
+</Base>

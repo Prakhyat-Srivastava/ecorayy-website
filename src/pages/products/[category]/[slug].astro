@@ -1,0 +1,15 @@
+---
+import CategoryView from '../../../views/CategoryView.astro';
+import ProductView from '../../../views/ProductView.astro';
+import { allFamilies, categories, getCategory, getFamily } from '../../../data/products';
+export function getStaticPaths() {
+  const subs = categories.flatMap((c) => (c.subs ?? []).map((s) => ({ params: { category: c.slug, slug: s.slug } })));
+  const fams = allFamilies.map((f) => ({ params: { category: f.category, slug: f.slug } }));
+  return [...subs, ...fams];
+}
+const { category: cat, slug } = Astro.params;
+const category = getCategory(cat!)!;
+const sub = category.subs?.find((s) => s.slug === slug);
+const family = sub ? undefined : getFamily(slug!);
+---
+{sub ? <CategoryView category={category} sub={sub} /> : <ProductView family={family!} />}

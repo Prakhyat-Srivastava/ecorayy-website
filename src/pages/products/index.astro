@@ -1,0 +1,84 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Img from '../../components/Img.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import CtaBand from '../../components/ui/CtaBand.astro';
+import { categories, categoryUrl, familiesIn, variantCount } from '../../data/products';
+const cats = categories.map((c) => ({ ...c, count: familiesIn(c.slug).length, variants: variantCount(c.slug) }));
+const guides = [
+  { icon: 'cable', title: 'Choose wire by circuit', text: '1.5 sq mm for lights and fans, 2.5 sq mm for sockets, 4 sq mm for AC points. Every size is explained where you choose it.' },
+  { icon: 'breaker', title: 'Protect every circuit', text: 'MCBs protect wiring from overload; a 30 mA RCCB protects people from shock. Most homes need both.' },
+  { icon: 'bulb', title: 'Pick the light colour', text: 'Warm 2700 K for bedrooms, natural 4000 K for living spaces, cool 6500 K for kitchens and study.' },
+];
+---
+<Base title="Products" description="Solar equipment, LED lighting, switches and sockets, wires and cables, and switchgear, filter by the values you know and build one Quote List for the whole job." ogImage="prd00">
+  <PageHero
+    crumbs={[{ label: 'Home', href: u('/') }, { label: 'Products' }]}
+    label="Products"
+    title="Electrical products for homes, projects and public works."
+    lead="Browse by category, filter by the values you already know, sq mm, amps, watts or light colour, and build one Quote List for the whole job."
+    image="prd00"
+  >
+    <div class="cluster">
+      <a class="btn" href="#categories">Browse categories<Icon name="arrow-right" /></a>
+      <button class="btn btn--secondary" type="button" data-open-search><Icon name="search" />Search by size or SKU</button>
+    </div>
+  </PageHero>
+
+  <section class="section section--paper" id="categories">
+    <div class="container">
+      <SectionHead label="Categories" title="Five categories, one clear catalogue." text="Every product shows the same key specifications, so you can compare at a glance." />
+      <div class="cat-tiles cat-tiles--5">
+        {cats.map((c, i) => (
+          <article class="card card--link cat-tile reveal" data-delay={i % 3}>
+            <div class="frame"><Img id={c.image} sizes={i === 0 ? '(min-width: 1000px) 38vw, 100vw' : '(min-width: 1000px) 28vw, (min-width: 600px) 45vw, 100vw'} /></div>
+            <div class="card__body">
+              <span class="cat-tile__count">{c.count} products · {c.variants} variants</span>
+              <h3 class="card__title"><a class="card__link" href={categoryUrl(c.slug)}>{c.name}</a></h3>
+              <p class="card__text">{c.short}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="showroom">
+    <div class="frame frame--night frame--flush showroom__img"><Img id="prd06" sizes="100vw" widths={[800, 1280, 1920, 2400]} /></div>
+    <div class="container showroom__copy">
+      <span class="label">Lighting</span>
+      <h2 class="h2">See it switched on.</h2>
+      <p>Every lighting product shows its light colour as a number and a swatch (never colour alone), so you know what the room will feel like.</p>
+      <a class="btn btn--on-night" href={u('/products/lighting/')}>Explore lighting<Icon name="arrow-right" /></a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead label="Choosing well" title="Plain answers to common questions." text="Short guidance where you need it. Your electrician should confirm sizes for your actual loads." />
+      <div class="tile-icons" style="--n:3">
+        {guides.map((g, i) => (
+          <div class="tile-icon reveal" data-delay={i}>
+            <span class="icon-circle icon-circle--lg"><Icon name={g.icon} /></span>
+            <h3>{g.title}</h3>
+            <p>{g.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <CtaBand
+        title="Building a list for a whole job?"
+        text="Add products as you browse. Your Quote List is saved on this device, can be shared as a link, and goes with your enquiry automatically."
+        primary={{ label: 'Open my Quote List', href: u('/quote/list/') }}
+        secondary={{ label: 'Download the catalogue', href: u('/downloads/#products') }}
+      />
+    </div>
+  </section>
+</Base>

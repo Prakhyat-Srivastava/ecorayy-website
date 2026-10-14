@@ -1,0 +1,35 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+<Base title="Search" description="Search Ecorayy products by name, size, rating or SKU.">
+  <section class="section section--tight">
+    <div class="container container--narrow">
+      <h1 class="h1" style="margin-bottom:20px">Search</h1>
+      <form class="search-bar card" style="border-radius:var(--r-pill);padding:6px 8px 6px 20px" action={u('/search/')} method="get" data-search-page>
+        <Icon name="search" />
+        <label class="visually-hidden" for="q">Search</label>
+        <input id="q" name="q" type="search" placeholder="Try “2.5 sq mm”, “32A MCB” or “solar street light”" autocomplete="off" />
+        <button class="btn btn--sm" type="submit">Search</button>
+      </form>
+      <div class="search-results" style="padding:16px 0" data-search-page-results aria-live="polite"></div>
+    </div>
+  </section>
+</Base>
+<script>
+  import { search, renderResults } from '../../scripts/search';
+  const input = document.querySelector<HTMLInputElement>('#q')!;
+  const out = document.querySelector<HTMLElement>('[data-search-page-results]')!;
+  const q = new URL(location.href).searchParams.get('q') ?? '';
+  input.value = q;
+  const run = async () => {
+    const v = input.value.trim();
+    if (v.length < 2) { out.innerHTML = ''; return; }
+    out.innerHTML = renderResults(await search(v), v, false);
+    const u = new URL(location.href); u.searchParams.set('q', v); history.replaceState(null, '', u);
+  };
+  let t = 0;
+  input.addEventListener('input', () => { clearTimeout(t); t = window.setTimeout(run, 120); });
+  void run();
+</script>

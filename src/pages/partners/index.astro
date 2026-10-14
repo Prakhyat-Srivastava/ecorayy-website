@@ -1,0 +1,44 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import LinkCard from '../../components/ui/LinkCard.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import CtaBand from '../../components/ui/CtaBand.astro';
+const why = [
+  { icon: 'grid', t: 'Three lines of business', d: 'Solar, infrastructure and products, so a partner can grow beyond one category.' },
+  { icon: 'list', t: 'One list for the whole job', d: 'Build a Quote List, share it with your customer, and send it as one enquiry.' },
+  { icon: 'users', t: 'People who pick up the phone', d: 'Every partner deals with named people, not a call centre.' },
+];
+---
+<Base title="Partners" description="Become an Ecorayy dealer or distributor, get project supply for builders and contractors, and tools for electricians." ogImage="ptn01">
+  <section class="page-hero" style="padding-bottom:clamp(32px,4vw,56px)">
+    <div class="container page-hero__copy" style="max-width:880px">
+      <Breadcrumbs items={[{ label: 'Home', href: u('/') }, { label: 'Partners' }]} />
+      <span class="label">Partners</span>
+      <h1 class="h1">Grow with Ecorayy.</h1>
+      <p class="lead">Dealers, distributors, electricians, contractors and builders, choose the door that fits you.</p>
+    </div>
+  </section>
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container grid card-grid-3">
+      <LinkCard href={u('/partners/dealers/')} image="ptn01" title="Dealers & distributors" text="Stock and sell Ecorayy across solar equipment, lighting, switches, wires and switchgear." go="Become a dealer" delay={0} />
+      <LinkCard href={u('/partners/electricians/')} image="ptn02" title="Electricians & contractors" text="Clear specifications, the right sizes, and a Quote List you can share with your customer." go="For electricians" delay={1} />
+      <LinkCard href={u('/partners/bulk-supply/')} image="ptn03" title="Bulk & project supply" text="One quote for a whole building, campus or project, with delivery planned around your schedule." go="Bulk supply" delay={2} />
+    </div>
+  </section>
+  <section class="section section--paper">
+    <div class="container">
+      <p class="tagline-moment reveal" style="margin-bottom:48px"><span lang="en">Together</span> is the whole point.</p>
+      <div class="tile-icons" style="--n:3">
+        {why.map((w, i) => <div class="tile-icon reveal" data-delay={i}><span class="icon-circle icon-circle--lg"><Icon name={w.icon} /></span><h3>{w.t}</h3><p>{w.d}</p></div>)}
+      </div>
+    </div>
+  </section>
+  <section class="section section--tight">
+    <div class="container">
+      <CtaBand title="Want to partner with us?" text="Tell us about your business and where you work. We’ll call you to talk it through." primary={{ label: 'Apply to become a dealer', href: u('/partners/dealers/#apply') }} secondary={{ label: 'Talk to us', href: u('/contact/?intent=dealer') }} />
+    </div>
+  </section>
+</Base>

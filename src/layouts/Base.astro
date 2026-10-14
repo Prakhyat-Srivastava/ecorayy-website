@@ -1,0 +1,108 @@
+---
+import '@fontsource-variable/plus-jakarta-sans';
+import '@fontsource-variable/jetbrains-mono';
+import '@fontsource/mukta/400.css';
+import '@fontsource/mukta/500.css';
+import '@fontsource/mukta/600.css';
+import '@fontsource/mukta/700.css';
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Overlays from '../components/Overlays.astro';
+import { images, type ImageId } from '../data/images';
+import { basePath, hasHindi, ui } from '../data/i18n';
+import { stripBase, u } from '../lib/url';
+import { company, directors, IS_PREVIEW, type Lang } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: Lang;
+  ogImage?: ImageId;
+  jsonLd?: Record<string, unknown>[];
+}
+const { title, description, lang = 'en', ogImage = 'br01', jsonLd = [] } = Astro.props;
+const path = stripBase(Astro.url.pathname);
+const base = basePath(path);
+const site = Astro.site ?? new URL('https://ecorayy.example');
+const fullTitle = base === '/' ? title : `${title} · Ecorayy`;
+const og = await getImage({ src: images[ogImage].src, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 80 });
+const t = ui[lang];
+
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: company.legalNameTitle,
+  alternateName: 'Ecorayy',
+  url: new URL(u('/'), site).href,
+  slogan: 'Brighter tomorrow together',
+  foundingDate: company.incorporatedISO,
+  identifier: [
+    { '@type': 'PropertyValue', propertyID: 'CIN', value: company.cin },
+    { '@type': 'PropertyValue', propertyID: 'GSTIN', value: company.gstin },
+  ],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: company.registeredOffice.street,
+    addressLocality: company.registeredOffice.city,
+    addressRegion: company.registeredOffice.state,
+    postalCode: company.registeredOffice.pin,
+    addressCountry: 'IN',
+  },
+  member: directors.map((d) => ({ '@type': 'Person', name: d.name, jobTitle: 'Director' })),
+};
+---
+<!doctype html>
+<html lang={lang} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {IS_PREVIEW && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href={new URL(u(path), site).href} />
+    {hasHindi(base) && (
+      <>
+        <link rel="alternate" hreflang="en-IN" href={new URL(u(base), site).href} />
+        <link rel="alternate" hreflang="hi-IN" href={new URL(u(base === '/' ? '/hi/' : `/hi${base}`), site).href} />
+      </>
+    )}
+    <link rel="icon" type="image/png" sizes="32x32" href={u('/favicon-32.png')} />
+    <link rel="apple-touch-icon" href={u('/apple-touch-icon.png')} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Ecorayy" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(og.src, site).href} />
+    <meta property="og:locale" content={lang === 'hi' ? 'hi_IN' : 'en_IN'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify([org, ...jsonLd])} />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      try { if (localStorage.getItem('ecorayy.showSamples') === '1') document.documentElement.classList.add('show-samples'); } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.skip}</a>
+    {IS_PREVIEW && (
+      <div class="preview-banner no-print" role="note">
+        <div class="container preview-banner__inner">
+          <span><strong>{t.previewTitle}</strong> <span class="preview-banner__long">{t.previewText}</span></span>
+          <button type="button" data-toggle-samples aria-pressed="false" data-on={t.hideSamples} data-off={t.showSamples}>{t.showSamples}</button>
+        </div>
+      </div>
+    )}
+    <Header lang={lang} path={path} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <Overlays lang={lang} path={path} />
+    <script>
+      import '../scripts/site';
+      import '../scripts/quote-ui';
+    </script>
+  </body>
+</html>

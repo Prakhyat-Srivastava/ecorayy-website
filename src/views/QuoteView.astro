@@ -1,0 +1,50 @@
+---
+import { u } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import Steps from '../components/ui/Steps.astro';
+import { tr } from '../data/i18n';
+import { contact, type Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+const next = [
+  { icon: 'list', t: H('We read your list', 'हम आपकी सूची पढ़ते हैं'), d: H('A person checks every item, size and quantity.', 'एक व्यक्ति हर आइटम, साइज़ और मात्रा जाँचता है।') },
+  { icon: 'phone', t: H('We call or WhatsApp you', 'हम कॉल या WhatsApp करते हैं'), d: H('To confirm details and answer questions.', 'विवरण पक्का करने और सवालों के जवाब देने के लिए।') },
+  { icon: 'file', t: H('You get a written quote', 'आपको लिखित कोटेशन मिलता है'), d: H('With prices for your quantities and delivery.', 'आपकी मात्रा और डिलीवरी के हिसाब से कीमतों के साथ।') },
+];
+---
+<Base lang={lang} title={H('Request a quote', 'कोटेशन का अनुरोध')} description={H('Ask Ecorayy for a quote for one product or a whole list. Four details, no account, no OTP.', 'एक उत्पाद या पूरी सूची के लिए कोटेशन माँगें। चार विवरण, कोई अकाउंट या OTP नहीं।')}>
+  <section class="page-hero" style="padding-bottom:clamp(24px,3vw,40px)">
+    <div class="container page-hero__copy">
+      <Breadcrumbs items={[{ label: H('Home', 'होम'), href: hi ? u('/hi/') : u('/') }, { label: H('Request a quote', 'कोटेशन का अनुरोध') }]} />
+      <span class="label">{H('Quote', 'कोटेशन')}</span>
+      <h1 class="h1">{H('Request a quote', 'कोटेशन का अनुरोध करें')}</h1>
+      <p class="lead">{H('Four details, no account, no OTP. Anything in your Quote List is attached automatically.', 'चार विवरण, कोई अकाउंट या OTP नहीं। आपकी कोटेशन सूची अपने-आप साथ जुड़ जाती है।')}</p>
+    </div>
+  </section>
+  <section class="section section--tight" style="padding-top:0">
+    <div class="container contact-layout">
+      <EnquiryForm lang={lang} intent="products" id="quote-form" />
+      <aside class="contact-aside">
+        <div class="card">
+          <h2 class="h4">{H('What happens next', 'आगे क्या होगा')}</h2>
+          <Steps compact steps={next.map((s) => ({ icon: s.icon, title: s.t, text: s.d }))} />
+          <p class="small muted" data-sample="Response promise (B8)"><Icon name="clock" size={16} class="inline-icon" /> {tr(contact.responsePromise, lang)}</p>
+        </div>
+        <div class="card">
+          <h2 class="h4">{H('Your Quote List', 'आपकी कोटेशन सूची')}</h2>
+          <p class="muted small">{H('Add or change items before you send. You can also share the list with someone else first.', 'भेजने से पहले आइटम जोड़ें या बदलें। आप सूची पहले किसी और के साथ साझा भी कर सकते हैं।')}</p>
+          <div class="cluster">
+            <button class="btn btn--secondary btn--sm" type="button" data-open-quote><Icon name="list" />{H('Open list', 'सूची खोलें')} <span class="badge" data-quote-count>0</span></button>
+            <a class="btn btn--quiet btn--sm" href={u('/products/')}>{H('Browse products', 'उत्पाद देखें')}</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>

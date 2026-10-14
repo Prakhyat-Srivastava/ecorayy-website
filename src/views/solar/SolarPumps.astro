@@ -1,0 +1,106 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import EnquiryForm from '../../components/EnquiryForm.astro';
+import { href } from '../../data/i18n';
+import type { Lang } from '../../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const hi = lang === 'hi';
+const H = (en: string, h: string) => (hi ? h : en);
+// SAMPLE sizing table (checklist D5), replace with your engineers' table.
+const table = { '30': { s: 2, m: 3, l: 5 }, '60': { s: 3, m: 5, l: 7.5 }, '100': { s: 5, m: 7.5, l: 10 } };
+const kwp: Record<string, number> = { '2': 1.8, '3': 3, '5': 4.8, '7.5': 6.75, '10': 9 };
+const how = [
+  { icon: 'sun', t: H('Sun on the panels', 'पैनलों पर धूप'), d: H('Panels beside your borewell turn sunlight into power.', 'बोरवेल के पास लगे पैनल धूप को बिजली में बदलते हैं।') },
+  { icon: 'inverter', t: H('Controller runs the pump', 'कंट्रोलर पंप चलाता है'), d: H('It adjusts the pump to the sunlight through the day.', 'यह दिन भर धूप के हिसाब से पंप को चलाता है।') },
+  { icon: 'droplet', t: H('Water to your fields', 'खेतों तक पानी'), d: H('No diesel, no electricity bill, no waiting for supply hours.', 'न डीज़ल, न बिजली का बिल, न बिजली आने का इंतज़ार।') },
+];
+---
+<Base lang={lang} title={H('Solar pumps', 'सोलर पंप')} description={H('Solar water pumps for irrigation: which pump for how much water, from what depth. Simple guidance and a site visit.', 'सिंचाई के लिए सोलर पंप: कितने पानी और कितनी गहराई के लिए कौन-सा पंप।')} ogImage="sol05">
+  <PageHero
+    lang={lang}
+    crumbs={[{ label: H('Home', 'होम'), href: href('/', lang) }, { label: H('Solar', 'सोलर'), href: href('/solar/', lang) }, { label: H('Solar pumps', 'सोलर पंप') }]}
+    label={H('Solar pumps', 'सोलर पंप')}
+    title={H('Water for your fields, powered by the sun.', 'सूरज की ताक़त से, खेतों तक पानी।')}
+    lead={H('One question decides the pump: how much water, from what depth? Answer it below and we’ll suggest a starting point.', 'पंप एक सवाल से तय होता है: कितना पानी, कितनी गहराई से? नीचे जवाब दें, हम शुरुआती सुझाव देंगे।')}
+    image="sol05"
+  >
+    <a class="btn" href="#pump" style="justify-self:start"><Icon name="droplet" />{H('Find the right pump', 'सही पंप चुनें')}</a>
+  </PageHero>
+
+  <section class="section section--paper">
+    <div class="container">
+      <div class="tile-icons" style="--n:3">
+        {how.map((c, i) => <div class="tile-icon reveal" data-delay={i}><span class="icon-circle icon-circle--lg"><Icon name={c.icon} /></span><h3>{c.t}</h3><p>{c.d}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pump">
+    <div class="container">
+      <SectionHead label={H('Pump selector', 'पंप चयन')} title={H('Which pump for how much water, from what depth?', 'कितने पानी और कितनी गहराई के लिए कौन-सा पंप?')} />
+      <div class="estimator" data-pump data-table={JSON.stringify(table)} data-kwp={JSON.stringify(kwp)} data-lang={lang}>
+        <form class="estimator__inputs">
+          <fieldset class="field">
+            <legend class="field__label">{H('How deep is the water?', 'पानी कितनी गहराई पर है?')}</legend>
+            <div class="choice-group">
+              <label class="choice"><input type="radio" name="depth" value="30" checked /><span>{H('Up to 30 m', '30 मीटर तक')}</span></label>
+              <label class="choice"><input type="radio" name="depth" value="60" /><span>{H('30–60 m', '30–60 मीटर')}</span></label>
+              <label class="choice"><input type="radio" name="depth" value="100" /><span>{H('60–100 m', '60–100 मीटर')}</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="field">
+            <legend class="field__label">{H('How much land do you irrigate?', 'कितनी ज़मीन की सिंचाई करते हैं?')}</legend>
+            <div class="choice-group">
+              <label class="choice"><input type="radio" name="land" value="s" checked /><span>{H('1–2 acres', '1–2 एकड़')}</span></label>
+              <label class="choice"><input type="radio" name="land" value="m" /><span>{H('3–5 acres', '3–5 एकड़')}</span></label>
+              <label class="choice"><input type="radio" name="land" value="l" /><span>{H('6–10 acres', '6–10 एकड़')}</span></label>
+            </div>
+          </fieldset>
+          <p class="field__hint">{H('Not sure of the depth? Your borewell driller will know, or we check it at the visit.', 'गहराई पता नहीं? बोरवेल बनाने वाले को पता होगा, या हम विज़िट में जाँच लेंगे।')}</p>
+        </form>
+        <div class="estimator__result" aria-live="polite">
+          <div class="estimator__badge"><span class="tag tag--warn" data-sample="Sample pump sizing (D5)"><Icon name="alert" />{H('Sample sizing, starting point only', 'नमूना साइज़, केवल शुरुआती सुझाव')}</span></div>
+          <div class="est-grid">
+            <div class="est-figure est-figure--main"><span class="est-figure__k">{H('Suggested pump', 'सुझाया गया पंप')}</span><span class="est-figure__v" data-pout="hp">-</span></div>
+            <div class="est-figure"><span class="est-figure__k">{H('Solar panels', 'सोलर पैनल')}</span><span class="est-figure__v" data-pout="kwp">-</span></div>
+            <div class="est-figure"><span class="est-figure__k">{H('Pump type', 'पंप का प्रकार')}</span><span class="est-figure__v" data-pout="type" style="font-size:1rem;font-family:var(--font-sans)">-</span></div>
+          </div>
+          <p class="caption">{H('Government scheme details will be added here once confirmed.', 'सरकारी योजना की जानकारी पुष्टि होने पर यहाँ जोड़ी जाएगी।')}</p>
+          <a class="btn btn--block" href="#pump-form">{H('Ask for a site visit', 'साइट विज़िट के लिए पूछें')}<Icon name="arrow-right" /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper" id="pump-form">
+    <div class="container container--narrow">
+      <SectionHead label={H('Talk to us', 'हमसे बात करें')} title={H('Ask for a site visit', 'साइट विज़िट के लिए पूछें')} text={H('Leave your name, mobile and village or PIN code. We’ll call you.', 'अपना नाम, मोबाइल और गाँव या पिन कोड लिखें। हम आपको कॉल करेंगे।')} />
+      <EnquiryForm lang={lang} intent="solar" id="pump-enquiry" />
+    </div>
+  </section>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-pump]').forEach((root) => {
+    const table = JSON.parse(root.dataset.table!);
+    const kwp = JSON.parse(root.dataset.kwp!);
+    const hi = root.dataset.lang === 'hi';
+    const form = root.querySelector('form')!;
+    const out = (k: string) => root.querySelector<HTMLElement>(`[data-pout="${k}"]`)!;
+    const calc = () => {
+      const depth = form.querySelector<HTMLInputElement>('input[name=depth]:checked')!.value;
+      const land = form.querySelector<HTMLInputElement>('input[name=land]:checked')!.value;
+      const hp = table[depth][land];
+      out('hp').innerHTML = `${hp} <small>HP</small>`;
+      out('kwp').innerHTML = `≈ ${kwp[String(hp)]} <small>kWp</small>`;
+      out('type').textContent = depth === '30' ? (hi ? 'सरफ़ेस या सबमर्सिबल' : 'Surface or submersible') : (hi ? 'सबमर्सिबल (बोरवेल)' : 'Submersible (borewell)');
+    };
+    form.addEventListener('change', calc);
+    calc();
+  });
+</script>

@@ -1,0 +1,43 @@
+---
+import { Picture } from 'astro:assets';
+import { images, type ImageId } from '../data/images';
+import { tr, ui } from '../data/i18n';
+import type { Lang } from '../data/site';
+
+interface Props {
+  id: ImageId;
+  sizes: string;
+  lang?: Lang;
+  widths?: number[];
+  eager?: boolean;
+  class?: string;
+  position?: string;
+  vt?: string;          // view-transition-name (card → product hero morph)
+  tag?: boolean;        // show "Representative image" on placeholder images
+  alt?: string;         // override (use "" for decorative)
+}
+const { id, sizes, lang = 'en', widths, eager = false, class: cls, position, vt, tag = true, alt } = Astro.props;
+const img = images[id];
+const max = img.src.width;
+const ws = (widths ?? [360, 560, 800, 1120, 1600]).filter((w) => w <= max);
+if (!ws.includes(Math.min(max, 1600)) && max < 1600) ws.push(max);
+const style = [position && `object-position:${position}`, vt && `view-transition-name:${vt}`].filter(Boolean).join(';');
+---
+<Picture
+  src={img.src}
+  alt={alt ?? tr(img.alt, lang)}
+  widths={ws}
+  sizes={sizes}
+  formats={['avif', 'webp']}
+  fallbackFormat="jpg"
+  quality={78}
+  loading={eager ? 'eager' : 'lazy'}
+  fetchpriority={eager ? 'high' : undefined}
+  decoding={eager ? 'sync' : 'async'}
+  class={cls}
+  style={style || undefined}
+  data-tier={img.tier}
+/>
+{tag && img.tier === 'placeholder' && (
+  <span class="frame__tag" data-sample="Placeholder product image (C12)">{ui[lang].representative}</span>
+)}

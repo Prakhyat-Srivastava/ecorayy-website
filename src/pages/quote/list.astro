@@ -1,0 +1,114 @@
+---
+import { u } from '../../lib/url';
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import logo from '../../assets/brand/ecorayy-logo-lockup.png';
+import { company } from '../../data/site';
+const logoImg = await getImage({ src: logo, width: 360, format: 'png' });
+---
+<Base title="Quote List" description="Your Ecorayy Quote List, share it, save it as PDF, or send it as one enquiry.">
+  <section class="section section--tight" style="padding-top:clamp(24px,3vw,40px)">
+    <div class="container container--narrow" data-qlist-page>
+      <div class="print-head">
+        <img src={logoImg.src} alt="Ecorayy" width="180" style="height:auto" />
+        <div style="text-align:right;font-size:9pt">
+          <strong>Quote List</strong><br /><span data-print-date></span><br />{company.legalName}<br />GSTIN {company.gstin}
+        </div>
+      </div>
+      <div class="no-print"><Breadcrumbs items={[{ label: 'Home', href: u('/') }, { label: 'Request a quote', href: u('/quote/') }, { label: 'Quote List' }]} /></div>
+      <div class="qlist-page__head" style="margin-top:16px">
+        <div class="stack" style="--stack:10px">
+          <span class="label no-print" data-shared-label hidden>Shared with you</span>
+          <h1 class="h1" data-qlist-title>Your Quote List</h1>
+          <p class="lead no-print" data-qlist-lead>Saved on this device for 30 days. Share it, save it as PDF, or send it as one enquiry.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:28px" data-qlist-body>
+        <p class="muted">Loading…</p>
+      </div>
+      <p class="small muted" data-qlist-note style="margin-top:16px"></p>
+
+      <div class="cluster no-print" style="margin-top:28px" data-qlist-actions hidden>
+        <a class="btn" href={u('/quote/')} data-own-only>Request a quote<Icon name="arrow-right" /></a>
+        <button class="btn btn--secondary" type="button" data-add-shared hidden><Icon name="plus" />Add these to my Quote List</button>
+        <button class="btn btn--quiet" type="button" data-print><Icon name="print" />Save as PDF</button>
+        <button class="btn btn--quiet" type="button" data-share-list data-own-only><Icon name="share" />Share list</button>
+      </div>
+      <p class="caption" style="margin-top:24px">Prices are confirmed in a written quote. This list is not an order.</p>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { u } from '../../lib/url';
+  import * as quote from '../../scripts/quote-store';
+  import { loadCatalogue } from '../../scripts/search';
+  import { shareList } from '../../scripts/quote-ui';
+  import { toast } from '../../scripts/toast';
+
+  const root = document.querySelector<HTMLElement>('[data-qlist-page]')!;
+  const body = root.querySelector<HTMLElement>('[data-qlist-body]')!;
+  const noteEl = root.querySelector<HTMLElement>('[data-qlist-note]')!;
+  const actions = root.querySelector<HTMLElement>('[data-qlist-actions]')!;
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  root.querySelector('[data-print-date]')!.textContent = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  type Row = { sku: string; name: string; variant: string; qty: number; unit: { one: string; many: string; note?: string }; img?: string; url: string };
+  const table = (rows: Row[]) => `
+    <table class="qtable">
+      <thead><tr><th></th><th>Product</th><th>SKU</th><th style="text-align:right">Quantity</th></tr></thead>
+      <tbody>${rows.map((r) => `
+        <tr>
+          <td>${r.img ? `<img src="${esc(r.img)}" alt="" width="56" height="56">` : ''}</td>
+          <td><a href="${esc(r.url)}"><strong>${esc(r.name)}</strong></a><br><span class="muted small">${esc(r.variant)}</span></td>
+          <td class="mono small">${esc(r.sku)}</td>
+          <td class="num">${r.qty} ${esc(r.qty === 1 ? r.unit.one : r.unit.many)}${r.unit.note ? `<br><span class="caption">${esc(r.unit.note)}</span>` : ''}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  const empty = `<div class="no-results"><h2 class="h3">Your Quote List is empty.</h2><p class="muted">Add products while you browse, then come back here to share or send it.</p><a class="btn" href={u('/products/')}>Browse products</a></div>`;
+
+  async function render() {
+    const hash = new URLSearchParams(location.hash.slice(1)).get('l');
+    if (hash) {
+      const shared = quote.decodeShare(hash);
+      root.querySelector<HTMLElement>('[data-shared-label]')!.hidden = false;
+      root.querySelector('[data-qlist-title]')!.textContent = 'A shared Quote List';
+      root.querySelector('[data-qlist-lead]')!.textContent = 'Someone shared this list with you. Review it, add it to your own Quote List, or save it as PDF.';
+      if (!shared) { body.innerHTML = '<p class="notice">This link looks incomplete. Ask the sender to share it again.</p>'; return; }
+      const cat = await loadCatalogue();
+      const rows: Row[] = [];
+      for (const [sku, qty] of shared.i) {
+        const fam = cat.families.find((f) => f.variants.some((v) => v.sku === sku));
+        const v = fam?.variants.find((x) => x.sku === sku);
+        if (fam && v) rows.push({ sku, name: fam.name, variant: v.label, qty: Number(qty) || 1, unit: (fam as unknown as { unit: Row['unit'] }).unit, img: fam.img, url: `${fam.url}?v=${sku}` });
+      }
+      body.innerHTML = rows.length ? table(rows) : empty;
+      noteEl.textContent = shared.n ? `Note: ${shared.n}` : '';
+      actions.hidden = false;
+      actions.querySelectorAll<HTMLElement>('[data-own-only]').forEach((x) => (x.hidden = true));
+      const addBtn = actions.querySelector<HTMLButtonElement>('[data-add-shared]')!;
+      addBtn.hidden = rows.length === 0;
+      addBtn.onclick = () => {
+        rows.forEach(({ qty, ...item }) => quote.add(item, qty));
+        if (shared.n) quote.setNote(shared.n);
+        toast(`Added ${rows.length} items to your Quote List`);
+        addBtn.disabled = true;
+      };
+      return;
+    }
+    const s = quote.snapshot();
+    body.innerHTML = s.items.length ? table(s.items) : empty;
+    noteEl.textContent = s.note ? `Note: ${s.note}` : '';
+    actions.hidden = s.items.length === 0;
+  }
+  actions.querySelector('[data-print]')!.addEventListener('click', () => window.print());
+  actions.querySelector('[data-share-list]')!.addEventListener('click', () => void shareList());
+  window.addEventListener('quote:change', () => { if (!location.hash) void render(); });
+  window.addEventListener('hashchange', () => void render());
+  await render();
+  if (new URL(location.href).searchParams.get('print') === '1' && quote.count()) setTimeout(() => window.print(), 400);
+</script>

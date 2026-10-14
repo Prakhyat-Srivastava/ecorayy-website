@@ -1,0 +1,21 @@
+---
+import { u } from '../../lib/url';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Icon from '../Icon.astro';
+interface Props { title: string; description: string; lead?: string; note?: string; sample?: string }
+const { title, description, lead, note, sample } = Astro.props;
+---
+<Base title={title} description={description}>
+  <section class="section section--tight">
+    <div class="container container--narrow">
+      <Breadcrumbs items={[{ label: 'Home', href: u('/') }, { label: title }]} />
+      <div class="stack" style="--stack:16px;margin-top:16px">
+        <h1 class="h1">{title}</h1>
+        {lead && <p class="lead">{lead}</p>}
+        {note && <p class="notice" data-sample={sample}><Icon name="alert" /><span>{note}</span></p>}
+      </div>
+      <div class="prose" style="margin-top:32px"><slot /></div>
+    </div>
+  </section>
+</Base>

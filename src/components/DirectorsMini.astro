@@ -1,0 +1,17 @@
+---
+import { u } from '../lib/url';
+import Img from './Img.astro';
+import { directors, type Lang } from '../data/site';
+import { tr } from '../data/i18n';
+interface Props { lang?: Lang; size?: number; link?: boolean }
+const { lang = 'en', size = 96, link = true } = Astro.props;
+const Tag = link ? 'a' : 'div';
+---
+<div class="people-mini">
+  {directors.map((d) => (
+    <Tag class="person-mini" href={link ? u('/about/team/') : undefined}>
+      <span class="avatar" style={`--size:${size}px`}><Img id={d.circle as any} lang={lang} sizes={`${size}px`} widths={[size, size * 2]} tag={false} /></span>
+      <span><strong>{d.name}</strong><span class="role-label">{tr(d.role, lang)}</span></span>
+    </Tag>
+  ))}
+</div>
