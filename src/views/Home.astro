@@ -135,15 +135,15 @@ const cats = categories.map((c) => ({ ...c, count: familiesIn(c.slug).length }))
 
   <Vision lang={lang} />
 
-  <!-- 6. Registrations, not slogans -->
+  <!-- 6. Registrations -->
   <section class="section">
     <div class="container">
       <div class="trust">
         <div>
           <SectionHead
-            label={H('Verifiable, not just trustworthy', 'जाँच सकने योग्य')}
-            title={H('Check us. Don’t just trust us.', 'हम पर भरोसा करने से पहले, हमें जाँचिए।')}
-            text={H('Ecorayy was incorporated in 2026. Behind our words are our registrations, each one checkable on an official government portal.', 'Ecorayy का निगमन 2026 में हुआ। हमारी बातों के पीछे हैं हमारे पंजीकरण, हर एक को सरकारी पोर्टल पर जाँचा जा सकता है।')}
+            label={H('Registered & recognised', 'पंजीकृत और मान्यता प्राप्त')}
+            title={H('Registered, recognised and open to verify.', 'पंजीकृत, मान्यता प्राप्त, और हर जानकारी जाँचने योग्य।')}
+            text={H('Ecorayy Power Tech is a registered private limited company, recognised as a startup by DPIIT. Every registration below can be confirmed on an official government portal.', 'Ecorayy Power Tech एक पंजीकृत प्राइवेट लिमिटेड कंपनी है, जिसे DPIIT ने स्टार्टअप के रूप में मान्यता दी है। नीचे दिया हर पंजीकरण सरकारी पोर्टल पर जाँचा जा सकता है।')}
           />
           <Registrations lang={lang} prefix="home" />
           <div class="reveal" style="margin-top:12px"><Certificate lang={lang} id="home" /></div>
@@ -189,7 +189,7 @@ const cats = categories.map((c) => ({ ...c, count: familiesIn(c.slug).length }))
       <div class="talk">
         <div class="stack reveal" style="--stack:18px">
           <span class="label">{H('Talk to us', 'हमसे बात करें')}</span>
-          <h2 class="h2">{H('Talk to a person, not a form.', 'फ़ॉर्म से नहीं, एक इंसान से बात करें।')}</h2>
+          <h2 class="h2">{H('Speak directly with our team.', 'हमारी टीम से सीधे बात करें।')}</h2>
           <p class="lead">{H('Call, WhatsApp or visit. Or send one short enquiry and we’ll come back to you.', 'कॉल करें, WhatsApp करें या आइए। या एक छोटी-सी पूछताछ भेजें, हम आपसे संपर्क करेंगे।')}</p>
           <div class="cluster">
             <a class="btn" href={href('/quote/', lang)}>{H('Get a quote', 'कोटेशन लें')}<Icon name="arrow-right" /></a>
