@@ -21,20 +21,6 @@ for (const n of nav) for (const it of n.mega?.items ?? []) {
   if (!previews.has(it.image)) previews.set(it.image, (await getImage({ src: images[it.image].src, width: 760, format: 'webp', quality: 72 })).src);
 }
 ---
-<div class="utility">
-  <div class="container utility__inner">
-    <div class="utility__group">
-      <span class="utility__item" data-sample="Phone number (B3)"><Icon name="phone" />{contact.phoneDisplay}</span>
-      <span class="utility__item" data-sample="WhatsApp number (B4)" title={t.notConnected}><Icon name="chat" />{t.whatsapp} · {t.notConnected}</span>
-      <span class="utility__item" data-sample="Office hours (B5)"><Icon name="clock" />{tr(contact.hours, lang)}</span>
-    </div>
-    <div class="utility__group">
-      <a class="utility__item" href={u('/downloads/')}><Icon name="download" />{t.downloads}</a>
-      <LangSwitch lang={lang} path={path} />
-    </div>
-  </div>
-</div>
-
 <header class="header" data-header>
   <div class="container header__inner">
     <a class="header__logo" href={href('/', lang)} aria-label={lang === 'hi' ? 'Ecorayy होम' : 'Ecorayy home'}>
@@ -86,7 +72,7 @@ for (const n of nav) for (const it of n.mega?.items ?? []) {
     </nav>
 
     <div class="header__actions">
-      <span class="header__lang-mobile"><LangSwitch lang={lang} path={path} compact /></span>
+      <span class="header__lang"><LangSwitch lang={lang} path={path} compact /></span>
       <button class="icon-btn" type="button" data-open-search aria-label={t.search} aria-keyshortcuts="/">
         <Icon name="search" />
       </button>

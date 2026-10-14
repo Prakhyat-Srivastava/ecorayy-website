@@ -13,12 +13,6 @@ const { lang } = Astro.props;
 const hi = lang === 'hi';
 const logoImg = await getImage({ src: logo, width: 440, format: 'webp', quality: 90 });
 ---
-<section class="signoff" aria-label={hi ? 'टैगलाइन' : 'Tagline'}>
-  <div class="container">
-    <p class="signoff__line"><span class="signoff__text" lang="en">Brighter tomorrow together</span></p>
-  </div>
-</section>
-
 <footer class="footer">
   <div class="container">
     <div class="footer__top">
@@ -31,7 +25,7 @@ const logoImg = await getImage({ src: logo, width: 440, format: 'webp', quality:
         </p>
         <ul class="footer__contact" role="list">
           <li class="contact-item" data-sample="Phone (B3)"><Icon name="phone" /><span>{contact.phoneDisplay}</span></li>
-          <li class="contact-item"><Icon name="mail" /><a href={contact.emailHref}>{contact.email}</a></li>
+          <li class="contact-item"><Icon name="mail" /><span><a href={contact.emailHref}>{contact.email}</a></span></li>
           <li class="contact-item" data-sample="Hours (B5)"><Icon name="clock" /><span>{tr(contact.hours, lang)}</span></li>
           <li class="contact-item"><Icon name="map-pin" /><span>{hi ? 'पंजीकृत कार्यालय: ' : 'Registered office: '}{company.registeredOffice.oneLine}</span></li>
         </ul>

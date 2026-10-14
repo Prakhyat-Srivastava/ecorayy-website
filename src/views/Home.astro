@@ -19,12 +19,6 @@ const { lang } = Astro.props;
 const hi = lang === 'hi';
 const H = (en: string, h: string) => (hi ? h : en);
 
-const pillars = [
-  { title: H('Solar', 'सोलर'), text: H('Rooftop, business and ground-mount solar, pumps and storage.', 'रूफ़टॉप, व्यावसायिक और ग्राउंड-माउंट सोलर, पंप और स्टोरेज।'), href: href('/solar/', lang), img: 'sol01' as const },
-  { title: H('Infrastructure', 'इन्फ्रास्ट्रक्चर'), text: H('Street, highway and public lighting for public bodies and developers.', 'सार्वजनिक संस्थाओं और डेवलपर्स के लिए स्ट्रीट, हाईवे और सार्वजनिक लाइटिंग।'), href: u('/infrastructure/'), img: 'inf01' as const },
-  { title: H('Products', 'उत्पाद'), text: H('Lighting, switches, wires, switchgear and solar equipment.', 'लाइटिंग, स्विच, तार, स्विचगियर और सोलर उपकरण।'), href: u('/products/'), img: 'prd00' as const },
-];
-
 const audiences = [
   { icon: 'home', title: H('I want solar for my home', 'मुझे अपने घर के लिए सोलर चाहिए'), text: H('See what it could save you, and how it works.', 'देखें कितनी बचत हो सकती है, और काम कैसे होता है।'), href: href('/solar/homes/', lang) },
   { icon: 'factory', title: H('I run a business or institution', 'मेरा व्यवसाय या संस्थान है'), text: H('Rooftop and ground-mount solar, with storage.', 'रूफ़टॉप और ग्राउंड-माउंट सोलर, स्टोरेज सहित।'), href: href('/solar/business/', lang) },
@@ -67,15 +61,6 @@ const cats = categories.map((c) => ({ ...c, count: familiesIn(c.slug).length }))
         </div>
       </div>
 
-      <nav class="pillars" aria-label={H('Our three areas of work', 'हमारे काम के तीन क्षेत्र')}>
-        {pillars.map((p, i) => (
-          <a class="pillar" href={p.href}>
-            <span class="frame"><Img id={p.img} lang={lang} sizes="88px" widths={[120, 200]} /></span>
-            <span><span class="pillar__title">{p.title}</span><span class="pillar__text">{p.text}</span></span>
-            <span class="pillar__arrow"><Icon name="arrow-right" /></span>
-          </a>
-        ))}
-      </nav>
     </div>
   </section>
 
